@@ -13,11 +13,13 @@
 ActiveRecord::Schema.define(version: 2019_10_18_070357) do
 
   create_table "articles", force: :cascade do |t|
+    t.integer "story_id"
     t.string "name"
-    t.string "text"
-    t.integer "type"
+    t.string "content"
+    t.integer "a_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["story_id"], name: "index_articles_on_story_id"
   end
 
   create_table "stories", force: :cascade do |t|
