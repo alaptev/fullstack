@@ -4,7 +4,7 @@ import { post } from 'axios';
 class ArticleAdd extends Component {
   constructor() {
     super();
-    this.state = { title: '', content: ''};
+    this.state = { name: '', content: ''};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -12,7 +12,7 @@ class ArticleAdd extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const domain = 'http://localhost:3004'
+    const domain = 'http://localhost:3012'
     post(`${domain}/api/articles.json`, this.state)
       .then((response) => {
         this.props.history.push(`/articles/${response.data.id}`);
@@ -34,8 +34,8 @@ class ArticleAdd extends Component {
         <h1>Create Article Post</h1>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
-            <label>Title</label>
-            <input type="text" name="title" value={this.state.title} onChange={this.handleChange} className="form-control" />
+            <label>Name</label>
+            <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" />
           </div>
           <div className="form-group">
             <label>Content</label>

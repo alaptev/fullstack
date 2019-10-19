@@ -9,7 +9,7 @@ class ArticleList extends Component {
   }
 
   componentDidMount() {
-    const domain = 'http://localhost:3004'
+    const domain = 'http://localhost:3012'
     get(`${domain}/api/articles.json`)
       .then(response => {
         this.setState({articles: response.data});
@@ -23,7 +23,7 @@ class ArticleList extends Component {
         {this.state.articles.map((article) => {
           return(
             <div key={article.id}>
-              <h2><Link to={`/articles/${article.id}`}>{article.title}</Link></h2>
+              <h2><Link to={`/articles/${article.id}`}>{article.name}</Link></h2>
               {article.content}
               <hr/>
             </div>

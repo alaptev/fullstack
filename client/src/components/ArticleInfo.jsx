@@ -10,7 +10,7 @@ class ArticleInfo extends Component {
   }
 
   componentDidMount() {
-    const domain = 'http://localhost:3004'
+    const domain = 'http://localhost:3012'
     axios.get(`${domain}/api/articles/${this.props.match.params.id}.json`)
       .then((response) => {
         this.setState({
@@ -21,7 +21,7 @@ class ArticleInfo extends Component {
   }
 
   handleDelete() {
-    const domain = 'http://localhost:3004'
+    const domain = 'http://localhost:3012'
     axios.delete(`${domain}/api/articles/${this.props.match.params.id}.json`)
       .then(() => {
         // it is essentially a redirect
@@ -33,7 +33,7 @@ class ArticleInfo extends Component {
   render() {
     return (
       <div>
-        <h2>{this.state.article.id}: {this.state.article.title}</h2>
+        <h2>{this.state.article.id}: {this.state.article.name}</h2>
         <p>{this.state.article.content}</p>
         <p>
           <Link to={`/articles/${this.state.article.id}/edit`} className="btn btn-outline-dark">Edit</Link>
