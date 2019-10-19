@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { get } from 'axios';
 import { Link } from 'react-router-dom';
-import { API_HOST } from '../constants';
+import { API_HOST, ARTICLE_TYPE } from '../constants';
+import { Table } from 'reactstrap'
 
 class ArticleList extends Component {
   constructor() {
@@ -20,15 +21,29 @@ class ArticleList extends Component {
   render() {
     return (
       <div>
-        {this.state.articles.map((article) => {
-          return(
-            <div key={article.id}>
-              <h2><Link to={`/articles/${article.id}`}>{article.name}</Link></h2>
-              {article.content}
-              <hr/>
-            </div>
-          )
-        })}
+        <Table hover>
+          <thead>
+          <tr>
+            <th>Story</th>
+            <th>Article Name</th>
+            <th>Content</th>
+            <th>Type</th>
+          </tr>
+          </thead>
+          <tbody>
+            {this.state.articles.map((article) => {
+              return(
+                <tr key={article.id}>
+                  <td>ADD it</td>
+                  <td><Link to={`/articles/${article.id}`}>{article.name}</Link></td>
+                  <td>{article.content}</td>
+                  <td>{ARTICLE_TYPE[article.a_type]}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </Table>
+
         <Link to="/articles/new" className="btn btn-outline-primary">Create Article</Link>
       </div>
     )
