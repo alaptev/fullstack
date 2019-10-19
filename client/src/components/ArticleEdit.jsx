@@ -1,5 +1,6 @@
 import React from 'react';
 import { get, patch } from 'axios';
+import { API_HOST } from '../constants'
 
 class ArticleEdit extends React.Component {
   constructor() {
@@ -11,8 +12,7 @@ class ArticleEdit extends React.Component {
   }
 
   componentDidMount() {
-    const domain = 'http://localhost:3012'
-    get(`${domain}/api/articles/${this.props.match.params.id}.json`)
+    get(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
       .then((response) => {
         this.setState(response.data);
       })

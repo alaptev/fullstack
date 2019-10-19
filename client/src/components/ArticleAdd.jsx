@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { post } from 'axios';
+import { API_HOST } from '../constants'
 
 class ArticleAdd extends Component {
   constructor() {
@@ -12,8 +13,7 @@ class ArticleAdd extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const domain = 'http://localhost:3012'
-    post(`${domain}/api/articles.json`, this.state)
+    post(`${API_HOST}/api/articles.json`, this.state)
       .then((response) => {
         this.props.history.push(`/articles/${response.data.id}`);
       })

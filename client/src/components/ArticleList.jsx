@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { get } from 'axios';
 import { Link } from 'react-router-dom';
+import { API_HOST } from '../constants';
 
 class ArticleList extends Component {
   constructor() {
@@ -9,8 +10,7 @@ class ArticleList extends Component {
   }
 
   componentDidMount() {
-    const domain = 'http://localhost:3012'
-    get(`${domain}/api/articles.json`)
+    get(`${API_HOST}/api/articles.json`)
       .then(response => {
         this.setState({articles: response.data});
       })

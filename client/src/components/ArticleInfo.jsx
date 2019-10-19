@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { API_HOST } from '../constants'
 
 class ArticleInfo extends Component {
   constructor() {
@@ -10,8 +11,7 @@ class ArticleInfo extends Component {
   }
 
   componentDidMount() {
-    const domain = 'http://localhost:3012'
-    axios.get(`${domain}/api/articles/${this.props.match.params.id}.json`)
+    axios.get(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
       .then((response) => {
         this.setState({
           article: response.data
@@ -21,8 +21,7 @@ class ArticleInfo extends Component {
   }
 
   handleDelete() {
-    const domain = 'http://localhost:3012'
-    axios.delete(`${domain}/api/articles/${this.props.match.params.id}.json`)
+    axios.delete(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
       .then(() => {
         // it is essentially a redirect
         this.props.history.push("/articles")
