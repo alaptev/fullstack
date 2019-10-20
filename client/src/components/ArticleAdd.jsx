@@ -6,7 +6,7 @@ class ArticleAdd extends Component {
   constructor() {
     super();
     // this.state = { story_id: '1', name: '', content: '', a_type: '1'};
-    this.state = { name: 'story 2222', articles_attributes: [ { name: 'test', content: 'asdfsdf', a_type: '1'} ]};
+    this.state = { name: 'added default store', articles_attributes: [ { name: 'added default article', content: 'hehe', a_type: '1'} ]};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);

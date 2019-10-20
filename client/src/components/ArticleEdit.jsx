@@ -5,7 +5,8 @@ import { API_HOST } from '../constants'
 class ArticleEdit extends React.Component {
   constructor() {
     super();
-    this.state = { story_id: '1', name: '', content: '', a_type: '1' };
+    // this.state = { story_id: '1', name: '', content: '', a_type: '1' };
+    this.state = { id: '', name: 'default store name', articles_attributes: [ { name: 'default article name', content: '', a_type: '1'} ]};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -22,7 +23,7 @@ class ArticleEdit extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    axios.patch(`${API_HOST}/api/articles/${this.state.id}.json`, this.state)
+    axios.patch(`${API_HOST}/api/stories/${this.state.id}.json`, this.state)
       .then(() => {
         this.props.history.push('/');
       })
