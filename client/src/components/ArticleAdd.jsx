@@ -16,7 +16,7 @@ class ArticleAdd extends Component {
     event.preventDefault();
     post(`${API_HOST}/api/stories.json`, this.state)
       .then((response) => {
-        this.props.history.push('/articles');
+        this.props.history.push('/');
       })
       .catch(error => console.log('error', error));
   }
@@ -26,7 +26,7 @@ class ArticleAdd extends Component {
   }
 
   handleCancel() {
-    this.props.history.push("/articles");
+    this.props.history.push("/");
   }
 
   render() {

@@ -35,7 +35,7 @@ class ArticleList extends Component {
               return(
                 <tr key={article.id}>
                   <td>{article.story_name}</td>
-                  <td><Link to={`/articles/${article.id}/edit`}>{article.name}</Link></td>
+                  <td><Link to={`/edit/${article.id}`}>{article.name}</Link></td>
                   <td>{article.content}</td>
                   <td>{ARTICLE_TYPE[article.a_type]}</td>
                 </tr>
@@ -44,7 +44,7 @@ class ArticleList extends Component {
           </tbody>
         </Table>
 
-        <Link to="/articles/new" className="btn btn-outline-primary">Create Article</Link>
+        <Link to="/new" className="btn btn-outline-primary">Create Article</Link>
       </div>
     )
   }

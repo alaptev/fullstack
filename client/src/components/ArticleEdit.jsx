@@ -24,7 +24,7 @@ class ArticleEdit extends React.Component {
     event.preventDefault();
     axios.patch(`${API_HOST}/api/articles/${this.state.id}.json`, this.state)
       .then(() => {
-        this.props.history.push('/articles');
+        this.props.history.push('/');
       })
       .catch(error => console.log('error', error));
   }
@@ -34,7 +34,7 @@ class ArticleEdit extends React.Component {
   }
 
   handleCancel() {
-    this.props.history.push('/articles');
+    this.props.history.push('/');
   }
 
   handleDelete() {

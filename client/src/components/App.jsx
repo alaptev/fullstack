@@ -22,9 +22,9 @@ class App extends Component {
 
 const Main = () => (
   <Switch>
-    <Route exact path="/articles" component={ArticleList} />
-    <Route exact path="/articles/new" component={ArticleAdd} />
-    <Route exact path="/articles/:id/edit" component={ArticleEdit} />
+    <Route exact path="/" component={ArticleList} />
+    <Route exact path="/new" component={ArticleAdd} />
+    <Route exact path="/edit/:id" component={ArticleEdit} />
   </Switch>
 );
 
