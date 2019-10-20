@@ -11,7 +11,7 @@ class ArticleList extends Component {
   }
 
   componentDidMount() {
-    get(`${API_HOST}/api/articles.json`)
+    get(`${API_HOST}/api/stories.json`)
       .then(response => {
         this.setState({articles: response.data});
       })
@@ -34,7 +34,7 @@ class ArticleList extends Component {
             {this.state.articles.map((article) => {
               return(
                 <tr key={article.id}>
-                  <td>{article.story_id}</td>
+                  <td>{article.story_name}</td>
                   <td><Link to={`/articles/${article.id}`}>{article.name}</Link></td>
                   <td>{article.content}</td>
                   <td>{ARTICLE_TYPE[article.a_type]}</td>

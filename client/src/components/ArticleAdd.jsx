@@ -5,7 +5,8 @@ import { API_HOST } from '../constants'
 class ArticleAdd extends Component {
   constructor() {
     super();
-    this.state = { story_id: '1', name: '', content: '', a_type: '1'};
+    // this.state = { story_id: '1', name: '', content: '', a_type: '1'};
+    this.state = { name: 'story 2222', articles_attributes: [ { name: 'test', content: 'asdfsdf', a_type: '1'} ]};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -13,7 +14,7 @@ class ArticleAdd extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    post(`${API_HOST}/api/articles.json`, this.state)
+    post(`${API_HOST}/api/stories.json`, this.state)
       .then((response) => {
         this.props.history.push(`/articles/${response.data.id}`);
       })

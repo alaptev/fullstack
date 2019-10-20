@@ -3,7 +3,11 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    @stories = Story.all
+    # @stories = Story.includes(:articles)
+    # @stories = Article.includes(:story)
+    # @stories = Story.joins(:articles)
+    # @stories = Article.joins(:story)
+    @stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
 
     render json: @stories
   end
@@ -46,6 +50,8 @@ class StoriesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def story_params
-      params.require(:story).permit(:name)
+      p = params.require(:story).permit(:name, articles_attributes: [ :id, :name, :content, :a_type ])
+      logger.info "---log--- params = '#{p.inspect}' "
+      p
     end
 end

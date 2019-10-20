@@ -46,6 +46,9 @@ class ArticlesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def article_params
-      params.require(:article).permit(:name, :content, :a_type)
+      p = params.require(:article).permit(:story_id, :name, :content, :a_type)
+      # p = params.fetch(:article, []).permit(:name, :content, :a_type)
+      logger.info "---log--- params = '#{p.inspect}' "
+      p
     end
 end
