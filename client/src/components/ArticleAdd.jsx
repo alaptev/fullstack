@@ -5,7 +5,7 @@ import { API_HOST } from '../constants'
 class ArticleAdd extends Component {
   constructor() {
     super();
-    this.state = { name: '', content: ''};
+    this.state = { story_id: '1', name: '', content: '', a_type: '1'};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -31,7 +31,7 @@ class ArticleAdd extends Component {
   render() {
     return (
       <div>
-        <h1>Create Article Post</h1>
+        <h4>Create Article</h4>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label>Name</label>
