@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, patch } from 'axios';
+import axios from 'axios';
 import { API_HOST } from '../constants'
 
 class ArticleEdit extends React.Component {
@@ -9,10 +9,11 @@ class ArticleEdit extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
-    get(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
+    axios.get(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
       .then((response) => {
         this.setState(response.data);
       })
@@ -21,10 +22,9 @@ class ArticleEdit extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const domain = 'http://localhost:3012'
-    patch(`${domain}/api/articles/${this.state.id}.json`, this.state)
+    axios.patch(`${API_HOST}/api/articles/${this.state.id}.json`, this.state)
       .then(() => {
-        this.props.history.push(`/articles/${this.state.id}`);
+        this.props.history.push('/articles');
       })
       .catch(error => console.log('error', error));
   }
@@ -34,9 +34,18 @@ class ArticleEdit extends React.Component {
   }
 
   handleCancel() {
-    this.props.history.push(`/articles/${this.state.id}`);
+    this.props.history.push('/articles');
   }
 
+  handleDelete() {
+    axios.delete(`${API_HOST}/api/articles/${this.state.id}.json`)
+      .then(() => {
+        // it is essentially a redirect
+        this.props.history.push("/articles")
+      })
+      .catch(error => console.log('error', error));
+  }
+  
   render() {
     return (
       <div>
@@ -52,6 +61,7 @@ class ArticleEdit extends React.Component {
           </div>
           <div className="btn-group">
             <button type="submit" className="btn btn-dark">Update</button>
+            <button onClick={this.handleDelete} className="btn btn-outline-dark">Delete</button>
             <button type="button" onClick={this.handleCancel} className="btn btn-secondary">Cancel</button>
           </div>
         </form>

@@ -35,7 +35,7 @@ class ArticleList extends Component {
               return(
                 <tr key={article.id}>
                   <td>{article.story_name}</td>
-                  <td><Link to={`/articles/${article.id}`}>{article.name}</Link></td>
+                  <td><Link to={`/articles/${article.id}/edit`}>{article.name}</Link></td>
                   <td>{article.content}</td>
                   <td>{ARTICLE_TYPE[article.a_type]}</td>
                 </tr>
