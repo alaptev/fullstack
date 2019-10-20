@@ -37,11 +37,12 @@ class ArticleEdit extends React.Component {
     this.props.history.push('/');
   }
 
-  handleDelete() {
+  handleDelete(event) {
+    event.preventDefault();
     axios.delete(`${API_HOST}/api/articles/${this.state.id}.json`)
       .then(() => {
         // it is essentially a redirect
-        this.props.history.push("/articles")
+        this.props.history.push('/')
       })
       .catch(error => console.log('error', error));
   }
