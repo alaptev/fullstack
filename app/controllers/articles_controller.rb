@@ -36,6 +36,7 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1
   def destroy
     @article.destroy
+    @article.story.destroy if @article.story.articles.count == 0
   end
 
   private
