@@ -1,26 +1,49 @@
 import React, { Component } from 'react';
-import { post } from 'axios';
+import axios from 'axios';
 import { API_HOST, ARTICLE_TYPE } from '../constants'
 import Select from 'react-select';
 
 class ArticleAdd extends Component {
   constructor() {
     super();
-    this.state = { story_name: 'default story', name: 'default article', content: '', a_type: '1' };
+    this.state = {
+      stories: [],
+      story: {},
+      name: 'default article', content: '',
+      type: ARTICLE_TYPE[0]
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
+    // this.handleNameInputChange = this.handleNameInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+  }
+
+  componentDidMount() {
+    const transformToOptions = (data) => {
+      return data.map((story) => {
+          return { stateVarName: 'story', value: story.id, label: story.name}
+        }
+      )
+    }
+
+    axios(`${API_HOST}/api/stories.json?stories_only=true`)
+      .then((response) => {
+        const stories = transformToOptions(response.data);
+        this.setState( { stories: stories, story: stories[0] || {} });
+      })
+      .catch(error => console.log('error', error));
   }
 
   handleSubmit(event) {
     event.preventDefault();
     const state = this.state;
     const data = {
-      name: state.story_name,
-      articles_attributes: [ { name: state.name, content: state.content, a_type: state.a_type} ]
+      id: state.story.value,
+      name: state.story.label,
+      articles_attributes: [ { name: state.name, content: state.content, a_type: state.type.value} ]
     };
-    post(`${API_HOST}/api/stories.json`, data)
+    axios.post(`${API_HOST}/api/stories.json`, data)
       .then((response) => {
         this.props.history.push('/');
       })
@@ -37,11 +60,13 @@ class ArticleAdd extends Component {
 
   handleSelectChange(selected) {
     // console.log(`Option selected:`, selected);
-    if (!!selected && this.state.a_type !== selected.value) {
-      // this.setState({ [selected.name]: selected.value });
-      this.setState({ a_type: selected.value });
-    }
+    this.setState({ [selected.stateVarName]: selected });
   }
+
+  //todo: fix it
+  // handleNameInputChange(selected) {
+  //   console.log(`Option selected:`, selected);
+  // }
 
   render() {
     return (
@@ -49,7 +74,13 @@ class ArticleAdd extends Component {
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label>Story Name</label>
-            <input type="text" name="story_name" value={this.state.story_name} onChange={this.handleChange} className="form-control" />
+            <Select
+              value={this.state.story}
+              onChange={this.handleSelectChange}
+              // onInputChange={this.handleNameInputChange}
+              options={this.state.stories}
+              placeholder='enter story name ...'
+            />
           </div>
           <div className="form-group">
             <label>Article Name</label>
@@ -60,7 +91,7 @@ class ArticleAdd extends Component {
             <textarea name="content" rows="5" value={this.state.content} onChange={this.handleChange} className="form-control" />
           </div>
           <Select
-            value={ARTICLE_TYPE[this.state.a_type - 1]}
+            value={this.state.type}
             onChange={this.handleSelectChange}
             options={ARTICLE_TYPE}
           />

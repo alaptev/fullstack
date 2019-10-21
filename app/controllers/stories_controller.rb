@@ -7,7 +7,11 @@ class StoriesController < ApplicationController
     # @stories = Article.includes(:story)
     # @stories = Story.joins(:articles)
     # @stories = Article.joins(:story)
-    @stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
+    if get_story_params[:stories_only]
+      @stories = Story.all
+    else
+      @stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
+    end
 
     render json: @stories
   end
@@ -54,4 +58,10 @@ class StoriesController < ApplicationController
       logger.info "---log--- params = '#{p.inspect}' "
       p
     end
+
+  def get_story_params
+    p = params.permit(:stories_only)
+    logger.info "---log--- params = '#{p.inspect}' "
+    p
+  end
 end
