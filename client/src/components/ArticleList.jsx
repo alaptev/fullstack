@@ -37,7 +37,7 @@ class ArticleList extends Component {
                   <td>{article.story_name}</td>
                   <td><Link to={`/edit/${article.id}`}>{article.name}</Link></td>
                   <td>{article.content}</td>
-                  <td>{ARTICLE_TYPE[article.a_type]}</td>
+                  <td>{ARTICLE_TYPE[article.a_type - 1].label}</td>
                 </tr>
               )
             })}
