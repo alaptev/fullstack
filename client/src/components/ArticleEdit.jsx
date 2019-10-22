@@ -14,7 +14,8 @@ class ArticleEdit extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`${API_HOST}/api/articles/${this.props.match.params.id}.json`)
+    const editArticleId = this.props.match.params.id
+    axios.get(`${API_HOST}/api/articles/${editArticleId}.json`)
       .then((response) => {
         this.setState(response.data);
       })
