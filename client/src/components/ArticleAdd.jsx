@@ -14,7 +14,8 @@ class ArticleAdd extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
-    // this.handleNameInputChange = this.handleNameInputChange.bind(this);
+    this.handleStorySelectChange = this.handleStorySelectChange.bind(this);
+    this.handleStorySelectInputChange = this.handleStorySelectInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }
@@ -59,14 +60,22 @@ class ArticleAdd extends Component {
   }
 
   handleSelectChange(selected) {
-    // console.log(`Option selected:`, selected);
+    console.log(`Option selected:`, selected);
     this.setState({ [selected.stateVarName]: selected });
   }
 
-  //todo: fix it
-  // handleNameInputChange(selected) {
-  //   console.log(`Option selected:`, selected);
-  // }
+  handleStorySelectChange(selected) {
+    console.log(`Story selected:`, selected);
+    this.setState({ story: selected });
+  }
+
+  handleStorySelectInputChange(selected) {
+    console.log(`Input selected:`, selected);
+    if (!!selected) {
+      const story = {value: '0', label: selected};
+      this.setState({ stories: [story], story: story });
+    }
+  }
 
   render() {
     return (
@@ -76,8 +85,8 @@ class ArticleAdd extends Component {
             <label>Story Name</label>
             <Select
               value={this.state.story}
-              onChange={this.handleSelectChange}
-              // onInputChange={this.handleNameInputChange}
+              onChange={this.handleStorySelectChange}
+              onInputChange={this.handleStorySelectInputChange}
               options={this.state.stories}
               placeholder='enter story name ...'
             />
