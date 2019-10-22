@@ -13,7 +13,7 @@ class ArticleAdd extends Component {
       type: ARTICLE_TYPE[0]
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
     this.handleStorySelectChange = this.handleStorySelectChange.bind(this);
     this.handleStorySelectInputChange = this.handleStorySelectInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,7 +23,7 @@ class ArticleAdd extends Component {
   componentDidMount() {
     const transformToOptions = (data) => {
       return data.map((story) => {
-          return { stateVarName: 'story', value: story.id, label: story.name}
+          return { value: story.id, label: story.name}
         }
       )
     }
@@ -59,9 +59,9 @@ class ArticleAdd extends Component {
     this.props.history.push("/");
   }
 
-  handleSelectChange(selected) {
-    console.log(`Option selected:`, selected);
-    this.setState({ [selected.stateVarName]: selected });
+  handleTypeSelectChange(selected) {
+    console.log(`Type selected:`, selected);
+    this.setState({ type: selected });
   }
 
   handleStorySelectChange(selected) {
@@ -70,7 +70,7 @@ class ArticleAdd extends Component {
   }
 
   handleStorySelectInputChange(selected) {
-    console.log(`Input selected:`, selected);
+    console.log(`StoryInput selected:`, selected);
     if (!!selected) {
       const story = {value: '0', label: selected};
       this.setState({ stories: [story], story: story });
@@ -101,7 +101,7 @@ class ArticleAdd extends Component {
           </div>
           <Select
             value={this.state.type}
-            onChange={this.handleSelectChange}
+            onChange={this.handleTypeSelectChange}
             options={ARTICLE_TYPE}
           />
           <div className="btn-group">
