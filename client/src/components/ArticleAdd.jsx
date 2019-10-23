@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { API_HOST, ARTICLE_TYPE } from '../constants'
 import Select from 'react-select';
+// import _ from 'lodash';
+import find from 'lodash/find'
 
 class ArticleAdd extends Component {
   constructor() {
@@ -9,8 +11,7 @@ class ArticleAdd extends Component {
     this.state = {
       stories: [],
       story: {},
-      name: 'default article', content: '',
-      type: ARTICLE_TYPE[0]
+      id: null, name: 'a', content: '', type: ARTICLE_TYPE[0]
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
@@ -29,12 +30,30 @@ class ArticleAdd extends Component {
       )
     }
 
-    axios(`${API_HOST}/api/stories.json?stories_only=true`)
+    axios(`${API_HOST}/api/stories.json`)
       .then((response) => {
         const stories = transformToOptions(response.data);
         this.setState( { stories: stories, story: stories[0] || {} });
       })
       .catch(error => console.log('error', error));
+
+    //TODO: make requests one after another, not async
+    const editArticleId = this.props.match.params.id
+
+    const transformToState = (data) => {
+      return {
+        id: data.id, name: data.name, content: data.content, type: ARTICLE_TYPE[data.a_type - 1],
+        story: find(this.state.stories, ['value', data.story_id])
+      }
+    }
+
+    if (editArticleId) {
+      axios.get(`${API_HOST}/api/stories/${editArticleId}.json`)
+        .then((response) => {
+          this.setState(transformToState(response.data));
+        })
+        .catch(error => console.log('error', error));
+    }
   }
 
   handleSubmit(event) {
@@ -43,7 +62,7 @@ class ArticleAdd extends Component {
     const data = {
       id: state.story.value,
       name: state.story.label,
-      articles_attributes: [ { name: state.name, content: state.content, a_type: state.type.value} ]
+      articles_attributes: [ { id: state.id, name: state.name, content: state.content, a_type: state.type.value} ]
     };
     axios.post(`${API_HOST}/api/stories.json`, data)
       .then((response) => {

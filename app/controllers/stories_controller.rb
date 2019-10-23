@@ -1,5 +1,6 @@
 class StoriesController < ApplicationController
-  before_action :set_story, only: [:show, :update, :destroy]
+  before_action :set_story, only: [:update]
+  before_action :set_article, only: [:show, :destroy]
 
   # GET /stories
   def index
@@ -12,12 +13,18 @@ class StoriesController < ApplicationController
     render json: @stories
   end
 
-  # GET /stories/1
+  # GET /stories/:id
+  # :id - this is article id
   def show
-    render json: @story
+    # TODO: anton: remove sleep and make requests one after another, not async
+    sleep 1
+    
+    render json: @article
   end
 
   # POST /stories
+  # WORKS!!! create a new story and new article
+  # create a new story and update existent article
   def create
     @story = Story.new(story_params)
 
@@ -28,8 +35,12 @@ class StoriesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /stories/1
+  # PATCH/PUT /stories/:id
+  # :id - this is story_id
+  # update story and create new article
+  # update story and update existent article
   def update
+    # @story = Story.find(params[:id])
     if @story.update(story_params)
       render json: @story
     else
@@ -37,9 +48,11 @@ class StoriesController < ApplicationController
     end
   end
 
-  # DELETE /stories/1
+  # DELETE /stories/:id
+  # :id - this is article id
   def destroy
-    @story.destroy
+    @article.destroy
+    @article.story.destroy if @article.story.articles.count == 0
   end
 
   private
@@ -48,9 +61,13 @@ class StoriesController < ApplicationController
       @story = Story.find(params[:id])
     end
 
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
     # Only allow a trusted parameter "white list" through.
     def story_params
-      p = params.require(:story).permit(:name, articles_attributes: [ :id, :name, :content, :a_type ])
+      p = params.require(:story).permit( :name, articles_attributes: [ :id, :name, :content, :a_type ])
       logger.info "---log--- params = '#{p.inspect}' "
       p
     end
