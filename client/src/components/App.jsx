@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import '../stylesheets/App.css';
 import ArticleList from './ArticleList';
 import ArticleAdd from './ArticleAdd';
-import ArticleEdit from './ArticleEdit';
 
 class App extends Component {
   render() {
@@ -24,7 +23,7 @@ const Main = () => (
   <Switch>
     <Route exact path="/" component={ArticleList} />
     <Route exact path="/new" component={ArticleAdd} />
-    <Route exact path="/edit/:id" component={ArticleEdit} />
+    <Route exact path="/edit/:id" component={ArticleAdd} />
   </Switch>
 );
 
