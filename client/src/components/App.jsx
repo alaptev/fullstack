@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import '../stylesheets/App.css';
 import ArticleList from './ArticleList';
-import ArticleAdd from './ArticleAdd';
+import ArticleAddEdit from './ArticleAddEdit';
 
 class App extends Component {
   render() {
@@ -22,8 +22,8 @@ class App extends Component {
 const Main = () => (
   <Switch>
     <Route exact path="/" component={ArticleList} />
-    <Route exact path="/new" component={ArticleAdd} />
-    <Route exact path="/edit/:id" component={ArticleAdd} />
+    <Route exact path="/new" component={ArticleAddEdit} />
+    <Route exact path="/edit/:id" component={ArticleAddEdit} />
   </Switch>
 );
 

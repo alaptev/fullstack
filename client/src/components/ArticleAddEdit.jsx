@@ -5,7 +5,7 @@ import Select from 'react-select';
 // import _ from 'lodash';
 import find from 'lodash/find'
 
-class ArticleAdd extends Component {
+class ArticleAddEdit extends Component {
   constructor() {
     super();
     this.state = {
@@ -159,4 +159,4 @@ class ArticleAdd extends Component {
   }
 }
 
-export default ArticleAdd;
+export default ArticleAddEdit;
