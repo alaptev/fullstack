@@ -11,7 +11,7 @@ class ArticleAddEdit extends Component {
     this.state = {
       stories: [],
       story: {},
-      id: null, name: 'a', content: '', type: ARTICLE_TYPE[0]
+      id: null, name: '', content: '', type: ARTICLE_TYPE[0]
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
