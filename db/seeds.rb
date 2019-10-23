@@ -6,6 +6,9 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+Story.destroy_all
+Article.destroy_all
+
 stories = Story.create([
   {name: "Story One"},
   {name: "Story Two"}
