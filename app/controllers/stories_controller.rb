@@ -23,10 +23,9 @@ class StoriesController < ApplicationController
   end
 
   # POST /stories
-  # WORKS!!! create a new story and new article
-  # create a new story and update existent article
+  # create new story and new article
   def create
-    @story = Story.new(story_params)
+    @story = Story.new(create_params)
 
     if @story.save
       render json: @story, status: :created, location: @story
@@ -37,11 +36,9 @@ class StoriesController < ApplicationController
 
   # PATCH/PUT /stories/:id
   # :id - this is story_id
-  # update story and create new article
-  # update story and update existent article
+  # create/update article for existent story
   def update
-    # @story = Story.find(params[:id])
-    if @story.update(story_params)
+    if @story.update(update_params)
       render json: @story
     else
       render json: @story.errors, status: :unprocessable_entity
@@ -66,11 +63,17 @@ class StoriesController < ApplicationController
   end
 
     # Only allow a trusted parameter "white list" through.
-    def story_params
-      p = params.require(:story).permit( :name, articles_attributes: [ :id, :name, :content, :a_type ])
+    def create_params
+      p = params.require(:story).permit( :name, articles_attributes: [ :name, :content, :a_type ])
       logger.info "---log--- params = '#{p.inspect}' "
       p
     end
+
+  def update_params
+    p = params.require(:story).permit( :id, :name, articles_attributes: [ :id, :name, :content, :a_type ])
+    logger.info "---log--- params = '#{p.inspect}' "
+    p
+  end
 
   def get_story_params
     p = params.permit(:with_articles)

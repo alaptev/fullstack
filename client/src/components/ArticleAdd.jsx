@@ -64,7 +64,17 @@ class ArticleAdd extends Component {
       name: state.story.label,
       articles_attributes: [ { id: state.id, name: state.name, content: state.content, a_type: state.type.value} ]
     };
-    axios.post(`${API_HOST}/api/stories.json`, data)
+    const config = { data: data }
+
+    if (data.id) { // create/update article for existent story
+      config.method = 'patch'
+      config.url = `${API_HOST}/api/stories/${data.id}`
+    } else { // create new story and new article
+      config.method = 'post'
+      config.url = `${API_HOST}/api/stories.json`
+    }
+
+    axios(config)
       .then((response) => {
         this.props.history.push('/');
       })
@@ -92,8 +102,8 @@ class ArticleAdd extends Component {
   handleStorySelectInputChange(selected) {
     console.log(`StoryInput selected:`, selected);
     if (!!selected) {
-      const story = {value: '0', label: selected};
-      this.setState({ stories: [story], story: story });
+      const story = {value: null, label: selected};
+      this.setState({ story: story });
     }
   }
 
