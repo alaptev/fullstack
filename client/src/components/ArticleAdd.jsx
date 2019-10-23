@@ -122,6 +122,7 @@ class ArticleAdd extends Component {
               onInputChange={this.handleStorySelectInputChange}
               options={this.state.stories}
               placeholder='enter story name ...'
+              isDisabled={ editArticleId }
             />
           </div>
           <div className="form-group">
