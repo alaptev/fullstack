@@ -18,6 +18,7 @@ class ArticleAdd extends Component {
     this.handleStorySelectInputChange = this.handleStorySelectInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentDidMount() {
@@ -77,7 +78,20 @@ class ArticleAdd extends Component {
     }
   }
 
+  handleDelete(event) {
+    const ArticleId = this.props.match.params.id
+
+    event.preventDefault();
+    axios.delete(`${API_HOST}/api/stories/${ArticleId}.json`)
+      .then(() => {
+        this.props.history.push('/')
+      })
+      .catch(error => console.log('error', error));
+  }
+
   render() {
+    const editArticleId = this.props.match.params.id
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -105,7 +119,8 @@ class ArticleAdd extends Component {
             options={ARTICLE_TYPE}
           />
           <div className="btn-group">
-            <button type="submit" className="btn btn-dark">Create</button>
+            <button type="submit" className="btn btn-dark">{ editArticleId ? 'Update' : 'Create' }</button>
+            { editArticleId && <button type="button" onClick={this.handleDelete} className="btn btn-outline-dark">Delete</button> }
             <button type="button" onClick={this.handleCancel} className="btn btn-secondary">Cancel</button>
           </div>
         </form>
