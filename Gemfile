@@ -47,3 +47,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # prevent Rails from blocking cross browser access, since our front end and back end will be running on different ports.
 gem 'rack-cors', require: 'rack/cors'
+
+# TODO: anton: add it
+# gem 'active_model_serializers'
