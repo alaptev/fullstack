@@ -4,17 +4,14 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    # TODO: anton: add params to filter, group and sort order
     data = if get_story_params[:with_articles]
-      stories =Story.joins(:articles).select('articles.*, stories.name AS story_name')
-      { 'storiesWithArticles': stories }
+      stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
+      { storiesWithArticles: stories }
     elsif get_story_params[:article_id]
-      article = Article.find(get_story_params[:article_id])
-      stories = Story.all
-      { 'storiesOnly': stories, 'articleToEdit': article }
+      { storiesOnly: Story.all,
+        articleToEdit: Article.find(get_story_params[:article_id]) }
     else
-      stories = Story.all
-      { 'storiesOnly': stories }
+      { storiesOnly: Story.all }
     end
 
     render json: data
@@ -45,6 +42,7 @@ class StoriesController < ApplicationController
 
   # DELETE /stories/:id
   # :id - this is article id
+  # delete the article and story(if it is empty)
   def destroy
     @article.destroy
     @article.story.destroy if @article.story.articles.count == 0
