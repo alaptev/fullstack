@@ -4,15 +4,18 @@ class StoriesController < ApplicationController
 
   # GET /stories
   def index
-    data = if get_story_params[:with_articles]
-      stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
-      { storiesWithArticles: stories }
-    elsif get_story_params[:article_id]
-      { storiesOnly: Story.all,
-        articleToEdit: Article.find(get_story_params[:article_id]) }
-    else
-      { storiesOnly: Story.all }
-    end
+    p = permitted_params
+    data = if p[:with_articles]
+             articles = Article.select('articles.*, stories.name AS story_name')
+                          .joins(:story)
+                          .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
+             { storiesWithArticles: articles }
+           elsif p[:article_id]
+             { storiesOnly: Story.all,
+               articleToEdit: Article.find(p[:article_id]) }
+           else
+             { storiesOnly: Story.all }
+           end
 
     render json: data
   end
@@ -71,8 +74,8 @@ class StoriesController < ApplicationController
     p
   end
 
-  def get_story_params
-    p = params.permit(:with_articles, :article_id)
+  def permitted_params
+    p = params.permit(:with_articles, :article_id, :filter)
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end

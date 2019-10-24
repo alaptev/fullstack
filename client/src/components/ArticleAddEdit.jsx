@@ -140,6 +140,7 @@ class ArticleAddEdit extends Component {
             onChange={this.handleTypeSelectChange}
             options={ARTICLE_TYPE}
           />
+          <br />
           <div className="btn-group">
             <button type="submit" className="btn btn-dark">{ editArticleId ? 'Update' : 'Create' }</button>
             { editArticleId && <button type="button" onClick={this.handleDelete} className="btn btn-outline-dark">Delete</button> }
