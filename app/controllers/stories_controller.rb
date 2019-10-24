@@ -6,7 +6,7 @@ class StoriesController < ApplicationController
   def index
     p = permitted_params
     order_by = "#{p[:order]}"
-    order_by = order_by + " DESC" if p[:desc]
+    order_by = order_by + " DESC" if p[:desc] == '1'
     data = if p[:with_articles]
              articles = Article.select('articles.*, stories.name AS story_name')
                           .joins(:story)
