@@ -5,10 +5,13 @@ class StoriesController < ApplicationController
   # GET /stories
   def index
     p = permitted_params
+    order_by = "#{p[:order]}"
+    order_by = order_by + " DESC" if p[:desc]
     data = if p[:with_articles]
              articles = Article.select('articles.*, stories.name AS story_name')
                           .joins(:story)
                           .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
+                          .order(order_by)
              { storiesWithArticles: articles }
            elsif p[:article_id]
              { storiesOnly: Story.all,
@@ -75,7 +78,7 @@ class StoriesController < ApplicationController
   end
 
   def permitted_params
-    p = params.permit(:with_articles, :article_id, :filter)
+    p = params.permit(:with_articles, :article_id, :filter, :order, :desc)
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end
