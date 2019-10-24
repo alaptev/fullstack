@@ -11,7 +11,7 @@ class ArticleAddEdit extends Component {
     this.state = {
       stories: [],
       story: {},
-      id: null, name: '', content: '', type: ARTICLE_TYPE[0]
+      article: { id: null, name: '', content: '', a_type: 1 }
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
@@ -23,55 +23,46 @@ class ArticleAddEdit extends Component {
   }
 
   componentDidMount() {
-    const transformToOptions = (data) => {
-      return data.map((story) => {
+    const editArticleId = this.props.match.params.id
+    const params = editArticleId && { article_id: editArticleId }
+
+    const transformStoriesToOptions = (data) => {
+      return data.storiesOnly && data.storiesOnly.map((story) => {
           return { value: story.id, label: story.name}
         }
       )
     }
 
-    axios(`${API_HOST}/api/stories.json`)
+    axios(`${API_HOST}/api/stories.json`, { params: params })
       .then((response) => {
-        const stories = transformToOptions(response.data);
-        this.setState( { stories: stories, story: stories[0] || {} });
+        const storiesOnly = transformStoriesToOptions(response.data);
+        if (editArticleId) {
+          const article = response.data.articleToEdit
+          const story = find(storiesOnly, ['value', article.story_id])
+          this.setState( { stories: storiesOnly, story: story, article: article });
+        } else {
+          const story = storiesOnly[0] || {}
+          this.setState( { stories: storiesOnly, story: story });
+        }
       })
       .catch(error => console.log('error', error));
 
-    //TODO: make requests one after another, not async
-    const editArticleId = this.props.match.params.id
-
-    const transformToState = (data) => {
-      return {
-        id: data.id, name: data.name, content: data.content, type: ARTICLE_TYPE[data.a_type - 1],
-        story: find(this.state.stories, ['value', data.story_id])
-      }
-    }
-
-    if (editArticleId) {
-      axios.get(`${API_HOST}/api/stories/${editArticleId}.json`)
-        .then((response) => {
-          this.setState(transformToState(response.data));
-        })
-        .catch(error => console.log('error', error));
-    }
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const state = this.state;
+    const { story, article } = this.state;
     const data = {
-      id: state.story.value,
-      name: state.story.label,
-      articles_attributes: [ { id: state.id, name: state.name, content: state.content, a_type: state.type.value} ]
+      id: story.value,
+      name: story.label,
+      articles_attributes: [ article ]
     };
-    const config = { data: data }
+    let config = { data: data }
 
     if (data.id) { // create/update article for existent story
-      config.method = 'patch'
-      config.url = `${API_HOST}/api/stories/${data.id}`
+      config = { ...config,  method: 'patch', url: `${API_HOST}/api/stories/${data.id}` }
     } else { // create new story and new article
-      config.method = 'post'
-      config.url = `${API_HOST}/api/stories.json`
+      config = { ...config,  method: 'post', url: `${API_HOST}/api/stories.json` }
     }
 
     axios(config)
@@ -82,7 +73,7 @@ class ArticleAddEdit extends Component {
   }
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    this.setState( { article: { ...this.state.article, [event.target.name]: event.target.value } });
   }
 
   handleCancel() {
@@ -91,7 +82,7 @@ class ArticleAddEdit extends Component {
 
   handleTypeSelectChange(selected) {
     console.log(`Type selected:`, selected);
-    this.setState({ type: selected });
+    this.setState({ article: { ...this.state.article, a_type: selected.value } });
   }
 
   handleStorySelectChange(selected) {
@@ -120,6 +111,7 @@ class ArticleAddEdit extends Component {
 
   render() {
     const editArticleId = this.props.match.params.id
+    const {article, story, stories} = this.state
 
     return (
       <div>
@@ -127,24 +119,24 @@ class ArticleAddEdit extends Component {
           <div className="form-group">
             <label>Story Name</label>
             <Select
-              value={this.state.story}
+              value={story}
               onChange={this.handleStorySelectChange}
               onInputChange={this.handleStorySelectInputChange}
-              options={this.state.stories}
+              options={stories}
               placeholder='enter story name ...'
               isDisabled={ editArticleId }
             />
           </div>
           <div className="form-group">
             <label>Article Name</label>
-            <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" />
+            <input type="text" name="name" value={article.name} onChange={this.handleChange} className="form-control" />
           </div>
           <div className="form-group">
             <label>Content</label>
-            <textarea name="content" rows="5" value={this.state.content} onChange={this.handleChange} className="form-control" />
+            <textarea name="content" rows="5" value={article.content} onChange={this.handleChange} className="form-control" />
           </div>
           <Select
-            value={this.state.type}
+            value={ARTICLE_TYPE[article.a_type - 1]}
             onChange={this.handleTypeSelectChange}
             options={ARTICLE_TYPE}
           />

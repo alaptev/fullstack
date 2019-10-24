@@ -13,7 +13,7 @@ class ArticleList extends Component {
   componentDidMount() {
     get(`${API_HOST}/api/stories.json?with_articles=true`)
       .then(response => {
-        this.setState({articles: response.data});
+        this.setState({articles: response.data.storiesWithArticles});
       })
       .catch(error => console.log('error', error));
   }

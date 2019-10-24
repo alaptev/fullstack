@@ -1,25 +1,23 @@
 class StoriesController < ApplicationController
   before_action :set_story, only: [:update]
-  before_action :set_article, only: [:show, :destroy]
+  before_action :set_article, only: [:destroy]
 
   # GET /stories
   def index
-    if get_story_params[:with_articles]
-      @stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
+    # TODO: anton: add params to filter, group and sort order
+    data = if get_story_params[:with_articles]
+      stories =Story.joins(:articles).select('articles.*, stories.name AS story_name')
+      { 'storiesWithArticles': stories }
+    elsif get_story_params[:article_id]
+      article = Article.find(get_story_params[:article_id])
+      stories = Story.all
+      { 'storiesOnly': stories, 'articleToEdit': article }
     else
-      @stories = Story.all
+      stories = Story.all
+      { 'storiesOnly': stories }
     end
 
-    render json: @stories
-  end
-
-  # GET /stories/:id
-  # :id - this is article id
-  def show
-    # TODO: anton: remove sleep and make requests one after another, not async
-    sleep 1
-    
-    render json: @article
+    render json: data
   end
 
   # POST /stories
@@ -76,7 +74,7 @@ class StoriesController < ApplicationController
   end
 
   def get_story_params
-    p = params.permit(:with_articles)
+    p = params.permit(:with_articles, :article_id)
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end
