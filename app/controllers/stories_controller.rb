@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StoriesController < ApplicationController
   before_action :set_story, only: [:update]
   before_action :set_article, only: [:destroy]
@@ -5,15 +7,15 @@ class StoriesController < ApplicationController
   # GET /stories
   def index
     p = permitted_params
-    order_by = "#{p[:order]}"
-    order_by = order_by + " DESC" if p[:desc] == '1'
+    order_by = (p[:order]).to_s
+    order_by += ' DESC' if p[:desc] == '1'
     group_by_field = GROUP_BY[p[:group]] ? GROUP_BY[p[:group]][:field_name] : ''
     data = if p[:with_articles]
              # TODO: anton: add grouped by story with totals
              articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
-                          .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
-                          .order(order_by).order('articles.id')
-                          .group(group_by_field)
+                               .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
+                               .order(order_by).order('articles.id')
+                               .group(group_by_field)
              { storiesWithArticles: articles }
            elsif p[:article_id]
              { storiesOnly: Story.all,
@@ -57,24 +59,25 @@ class StoriesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_story
-      @story = Story.find(params[:id])
-    end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_story
+    @story = Story.find(params[:id])
+  end
 
   def set_article
     @article = Article.find(params[:id])
   end
 
-    # Only allow a trusted parameter "white list" through.
-    def create_params
-      p = params.require(:story).permit( :name, articles_attributes: [ :name, :content, :a_type ])
-      logger.info "---log--- params = '#{p.inspect}' "
-      p
-    end
+  # Only allow a trusted parameter "white list" through.
+  def create_params
+    p = params.require(:story).permit(:name, articles_attributes: %i[name content a_type])
+    logger.info "---log--- params = '#{p.inspect}' "
+    p
+  end
 
   def update_params
-    p = params.require(:story).permit( :id, :name, articles_attributes: [ :id, :name, :content, :a_type ])
+    p = params.require(:story).permit(:id, :name, articles_attributes: %i[id name content a_type])
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end
@@ -91,5 +94,5 @@ class StoriesController < ApplicationController
     '2' => { value: '2', field_name: 'name',       label: 'Article Name' },
     '3' => { value: '3', field_name: 'content',    label: 'Article Content' },
     '4' => { value: '4', field_name: 'a_type',     label: 'Article Type' }
-  }
+  }.freeze
 end
