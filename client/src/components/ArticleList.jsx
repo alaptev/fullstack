@@ -46,12 +46,11 @@ class ArticleList extends Component {
   }
 
   handleStoryNameOrderClick(event) {
-    this.setState( (state) => { return {order: {story_name: !state.order.story_name}}})
-    this.getArticles();
+    this.setState( (state) => { return {order: { field: 'story_name', desc: !state.order.desc }}}, this.getArticles)
   }
 
   handleNameOrderClick(event) {
-    this.setState((state) => { return {order: {name: !state.order.name}}})
+    this.setState( (state) => { return {order: { field: 'name', desc: !state.order.desc }}}, this.getArticles)
   }
 
   getArticles() {
@@ -70,6 +69,9 @@ class ArticleList extends Component {
 
   render() {
     const state = this.state
+    const orderFlagFor = (field_name) => {
+      return this.state.order.field === field_name && (this.state.order.desc ? '^' : 'v')
+    }
 
     return (
       <div style={{marginTop: '1em'}}>
@@ -112,13 +114,13 @@ class ArticleList extends Component {
             <th>
               <Button 
                 onClick={this.handleStoryNameOrderClick}>
-                Story { isBoolean(this.state.order.story_name) && (this.state.order.story_name ? 'A' : 'V') }
+                &darr;&#8593; Story { orderFlagFor('story_name') }
               </Button>
             </th>
             <th>
               <Button
                 onClick={this.handleNameOrderClick}>
-                Article Name { isBoolean(this.state.order.name) && (this.state.order.name ? 'A' : 'V') }
+                Article Name { orderFlagFor('name') }
               </Button>
             </th>
             <th>

@@ -72,6 +72,7 @@ class ArticleAddEdit extends Component {
   }
 
   handleChange(event) {
+    // TODO: https://reactjs.org/docs/state-and-lifecycle.html#state-updates-may-be-asynchronous
     this.setState( { article: { ...this.state.article, [event.target.name]: event.target.value } });
   }
 
@@ -81,6 +82,7 @@ class ArticleAddEdit extends Component {
 
   handleTypeSelectChange(selected) {
     console.log(`Type selected:`, selected);
+    // TODO: https://reactjs.org/docs/state-and-lifecycle.html#state-updates-may-be-asynchronous
     this.setState({ article: { ...this.state.article, a_type: selected.value } });
   }
 
