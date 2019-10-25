@@ -3,7 +3,8 @@ import { get } from 'axios';
 import { Link } from 'react-router-dom';
 import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
-import Select from 'react-select'
+import Select from 'react-select';
+import isBoolean from 'lodash/isBoolean';
 
 class ArticleList extends Component {
   constructor() {
@@ -11,12 +12,15 @@ class ArticleList extends Component {
     this.state = {
       filter: '',
       group: 0,
+      order: {},
       articles: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleGroupSelectChange = this.handleGroupSelectChange.bind(this);
 
+    this.handleStoryNameOrderClick = this.handleStoryNameOrderClick.bind(this);
+    this.handleNameOrderClick = this.handleNameOrderClick.bind(this);
   }
 
   componentDidMount() {
@@ -33,20 +37,35 @@ class ArticleList extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    this.getArticles();
+  }
+
+  handleGroupSelectChange(selected) {
+    console.log(`Group selected:`, selected);
+    this.setState({ group: selected.value });
+  }
+
+  handleStoryNameOrderClick(event) {
+    this.setState( (state) => { return {order: {story_name: !state.order.story_name}}})
+    this.getArticles();
+  }
+
+  handleNameOrderClick(event) {
+    this.setState((state) => { return {order: {name: !state.order.name}}})
+  }
+
+  getArticles() {
     const params = {
       filter: this.state.filter,
-      group: this.state.group
+      group: this.state.group,
+      order: this.state.order.field,
+      desc: this.state.order.desc
     }
     get(`${API_HOST}/api/stories.json?with_articles=true`, { params: params })
       .then(response => {
         this.setState({articles: response.data.storiesWithArticles});
       })
       .catch(error => console.log('error', error));
-  }
-
-  handleGroupSelectChange(selected) {
-    console.log(`Group selected:`, selected);
-    this.setState({ group: selected.value });
   }
 
   render() {
@@ -90,10 +109,24 @@ class ArticleList extends Component {
         <Table hover>
           <thead>
           <tr>
-            <th>Story</th>
-            <th>Article Name</th>
-            <th>Content</th>
-            <th>Type</th>
+            <th>
+              <Button 
+                onClick={this.handleStoryNameOrderClick}>
+                Story { isBoolean(this.state.order.story_name) && (this.state.order.story_name ? 'A' : 'V') }
+              </Button>
+            </th>
+            <th>
+              <Button
+                onClick={this.handleNameOrderClick}>
+                Article Name { isBoolean(this.state.order.name) && (this.state.order.name ? 'A' : 'V') }
+              </Button>
+            </th>
+            <th>
+              Content
+            </th>
+            <th>
+              Type
+            </th>
           </tr>
           </thead>
           <tbody>

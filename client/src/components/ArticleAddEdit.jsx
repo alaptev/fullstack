@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { API_HOST, ARTICLE_TYPE } from '../constants'
 import Select from 'react-select';
-// import _ from 'lodash';
 import find from 'lodash/find'
 
 class ArticleAddEdit extends Component {
