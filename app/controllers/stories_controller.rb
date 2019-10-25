@@ -7,12 +7,13 @@ class StoriesController < ApplicationController
     p = permitted_params
     order_by = "#{p[:order]}"
     order_by = order_by + " DESC" if p[:desc] == '1'
+    group_by_field = GROUP_BY[p[:group]] ? GROUP_BY[p[:group]][:field_name] : ''
     data = if p[:with_articles]
              # TODO: anton: add grouped by story with totals
              articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
                           .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
                           .order(order_by).order('articles.id')
-                          .group(p[:group])
+                          .group(group_by_field)
              { storiesWithArticles: articles }
            elsif p[:article_id]
              { storiesOnly: Story.all,
@@ -83,4 +84,12 @@ class StoriesController < ApplicationController
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end
+
+  GROUP_BY = {
+    '0' => { value: '0', field_name: '',           label: 'no group' },
+    '1' => { value: '1', field_name: 'story_name', label: 'Story Name' },
+    '2' => { value: '2', field_name: 'name',       label: 'Article Name' },
+    '3' => { value: '3', field_name: 'content',    label: 'Article Content' },
+    '4' => { value: '4', field_name: 'a_type',     label: 'Article Type' }
+  }
 end

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { get } from 'axios';
 import { Link } from 'react-router-dom';
-import { API_HOST, ARTICLE_TYPE } from '../constants';
+import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select'
 
@@ -10,10 +10,13 @@ class ArticleList extends Component {
     super();
     this.state = {
       filter: '',
+      group: 0,
       articles: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleGroupSelectChange = this.handleGroupSelectChange.bind(this);
+
   }
 
   componentDidMount() {
@@ -30,12 +33,20 @@ class ArticleList extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const params = {filter: this.state.filter}
+    const params = {
+      filter: this.state.filter,
+      group: this.state.group
+    }
     get(`${API_HOST}/api/stories.json?with_articles=true`, { params: params })
       .then(response => {
         this.setState({articles: response.data.storiesWithArticles});
       })
       .catch(error => console.log('error', error));
+  }
+
+  handleGroupSelectChange(selected) {
+    console.log(`Group selected:`, selected);
+    this.setState({ group: selected.value });
   }
 
   render() {
@@ -61,10 +72,11 @@ class ArticleList extends Component {
             <InputGroup>
               <InputGroupAddon addonType="prepend">Group by</InputGroupAddon>
               <Select
-                value={{}}
-                onChange={this.handleStorySelectChange}
-                onInputChange={this.handleStorySelectInputChange}
-                options={[]}
+                id="group"
+                value={GROUP_BY[state.group]}
+                onChange={this.handleGroupSelectChange}
+                options={GROUP_BY}
+                placeholder=" select ..."
               />
             </InputGroup>
           </FormGroup>
