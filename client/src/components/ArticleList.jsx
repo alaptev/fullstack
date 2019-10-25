@@ -70,7 +70,7 @@ class ArticleList extends Component {
   render() {
     const state = this.state
     const orderFlagFor = (field_name) => {
-      return this.state.order.field === field_name && (this.state.order.desc ? '^' : 'v')
+      return this.state.order.field === field_name && (this.state.order.desc ? '\u2191' : '\u2193')
     }
 
     return (
@@ -114,7 +114,7 @@ class ArticleList extends Component {
             <th>
               <Button 
                 onClick={this.handleStoryNameOrderClick}>
-                &darr;&#8593; Story { orderFlagFor('story_name') }
+                Story { orderFlagFor('story_name') }
               </Button>
             </th>
             <th>
