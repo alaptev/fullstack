@@ -8,10 +8,11 @@ class StoriesController < ApplicationController
     order_by = "#{p[:order]}"
     order_by = order_by + " DESC" if p[:desc] == '1'
     data = if p[:with_articles]
-             articles = Article.select('articles.*, stories.name AS story_name')
-                          .joins(:story)
+             # TODO: anton: add grouped by story with totals
+             articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
                           .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
-                          .order(order_by)
+                          .order(order_by).order('articles.id')
+                          .group(p[:group])
              { storiesWithArticles: articles }
            elsif p[:article_id]
              { storiesOnly: Story.all,
@@ -78,7 +79,7 @@ class StoriesController < ApplicationController
   end
 
   def permitted_params
-    p = params.permit(:with_articles, :article_id, :filter, :order, :desc)
+    p = params.permit(:with_articles, :article_id, :filter, :order, :desc, :group)
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end

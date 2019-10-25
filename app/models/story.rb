@@ -1,5 +1,5 @@
 class Story < ApplicationRecord
-  has_many :articles, inverse_of: :story
+  has_many :articles, inverse_of: :story  #, -> { order('id DESC') }
 
   validates :name, presence: true
 
