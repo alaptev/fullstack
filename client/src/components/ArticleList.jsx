@@ -53,7 +53,8 @@ class ArticleList extends Component {
     const state = this.state
 
     return (
-      <div>
+      <div style={{marginTop: '1em'}}>
+
         <Form onSubmit={this.handleSubmit} inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>
