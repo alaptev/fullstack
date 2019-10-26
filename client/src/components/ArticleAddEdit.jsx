@@ -108,6 +108,7 @@ class ArticleAddEdit extends Component {
     const editArticleId = this.props.match.params.id
     const {article, story, stories} = this.state
 
+    // TODO: add js validation for form fields
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
