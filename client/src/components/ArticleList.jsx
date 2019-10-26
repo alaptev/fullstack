@@ -17,11 +17,7 @@ class ArticleList extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleGroupSelectChange = this.handleGroupSelectChange.bind(this);
-
-    this.handleStoryNameOrderClick = this.handleStoryNameOrderClick.bind(this);
-    this.handleNameOrderClick = this.handleNameOrderClick.bind(this);
-    this.handleContentOrderClick = this.handleContentOrderClick.bind(this);
-    this.handleTypeOrderClick = this.handleTypeOrderClick.bind(this);
+    this.handleOrderClick = this.handleOrderClick.bind(this);
   }
 
   componentDidMount() {
@@ -41,20 +37,9 @@ class ArticleList extends Component {
     this.setState({ group: selected.value });
   }
 
-  handleStoryNameOrderClick(event) {
-    this.setState( (state) => { return {order: { field: 'story_name', desc: !state.order.desc }}}, this.getArticles)
-  }
-
-  handleNameOrderClick(event) {
-    this.setState( (state) => { return {order: { field: 'name', desc: !state.order.desc }}}, this.getArticles)
-  }
-
-  handleContentOrderClick(event) {
-    this.setState( (state) => { return {order: { field: 'content', desc: !state.order.desc }}}, this.getArticles)
-  }
-
-  handleTypeOrderClick(event) {
-    this.setState( (state) => { return {order: { field: 'a_type', desc: !state.order.desc }}}, this.getArticles)
+  handleOrderClick(event) {
+    const fieldName = event.target.name;
+    this.setState( (state) => { return {order: { field: fieldName, desc: !state.order.desc }}}, this.getArticles)
   }
 
   getArticles() {
@@ -116,26 +101,30 @@ class ArticleList extends Component {
           <thead>
           <tr>
             <th>
-              <Button 
-                onClick={this.handleStoryNameOrderClick}>
+              <Button
+                name='story_name'
+                onClick={this.handleOrderClick}>
                 Story { orderFlagFor('story_name') }
               </Button>
             </th>
             <th>
               <Button
-                onClick={this.handleNameOrderClick}>
+                name='name'
+                onClick={this.handleOrderClick}>
                 Article Name { orderFlagFor('name') }
               </Button>
             </th>
             <th>
               <Button
-                onClick={this.handleContentOrderClick}>
+                name='content'
+                onClick={this.handleOrderClick}>
                 Content { orderFlagFor('content') }
               </Button>
             </th>
             <th>
               <Button
-                onClick={this.handleTypeOrderClick}>
+                name='a_type'
+                onClick={this.handleOrderClick}>
                 Type { orderFlagFor('a_type') }
               </Button>
             </th>
