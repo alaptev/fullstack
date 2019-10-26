@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
-import isBoolean from 'lodash/isBoolean';
+// import isBoolean from 'lodash/isBoolean';
 
 class ArticleList extends Component {
   constructor() {
@@ -21,6 +21,8 @@ class ArticleList extends Component {
 
     this.handleStoryNameOrderClick = this.handleStoryNameOrderClick.bind(this);
     this.handleNameOrderClick = this.handleNameOrderClick.bind(this);
+    this.handleContentOrderClick = this.handleContentOrderClick.bind(this);
+    this.handleTypeOrderClick = this.handleTypeOrderClick.bind(this);
   }
 
   componentDidMount() {
@@ -51,6 +53,14 @@ class ArticleList extends Component {
 
   handleNameOrderClick(event) {
     this.setState( (state) => { return {order: { field: 'name', desc: !state.order.desc }}}, this.getArticles)
+  }
+
+  handleContentOrderClick(event) {
+    this.setState( (state) => { return {order: { field: 'content', desc: !state.order.desc }}}, this.getArticles)
+  }
+
+  handleTypeOrderClick(event) {
+    this.setState( (state) => { return {order: { field: 'a_type', desc: !state.order.desc }}}, this.getArticles)
   }
 
   getArticles() {
@@ -124,10 +134,16 @@ class ArticleList extends Component {
               </Button>
             </th>
             <th>
-              Content
+              <Button
+                onClick={this.handleContentOrderClick}>
+                Content { orderFlagFor('content') }
+              </Button>
             </th>
             <th>
-              Type
+              <Button
+                onClick={this.handleTypeOrderClick}>
+                Type { orderFlagFor('a_type') }
+              </Button>
             </th>
           </tr>
           </thead>
