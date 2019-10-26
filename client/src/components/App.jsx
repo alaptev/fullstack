@@ -4,11 +4,13 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import '../stylesheets/App.css';
 import ArticleList from './ArticleList';
 import ArticleAddEdit from './ArticleAddEdit';
+import DevTools from 'mobx-react-devtools';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
+        {/*<DevTools />*/}
         <Router>
           <div className="container">
             <Main />
