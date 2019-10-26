@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
-// import isBoolean from 'lodash/isBoolean';
 
 class ArticleList extends Component {
   constructor() {
@@ -26,11 +25,7 @@ class ArticleList extends Component {
   }
 
   componentDidMount() {
-    get(`${API_HOST}/api/stories.json?with_articles=true`)
-      .then(response => {
-        this.setState({articles: response.data.storiesWithArticles});
-      })
-      .catch(error => console.log('error', error));
+    this.getArticles();
   }
 
   handleChange(event) {
@@ -43,7 +38,6 @@ class ArticleList extends Component {
   }
 
   handleGroupSelectChange(selected) {
-    console.log(`Group selected:`, selected);
     this.setState({ group: selected.value });
   }
 
