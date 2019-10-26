@@ -93,10 +93,7 @@ class ArticleAddEdit extends Component {
 
   handleStorySelectInputChange(selected) {
     console.log(`StoryInput selected:`, selected);
-    if (!!selected) {
-      const story = {value: null, label: selected};
-      this.setState({ story: story });
-    }
+    !!selected && this.setState({ story: {value: null, label: selected} });
   }
 
   handleDelete(event) {
