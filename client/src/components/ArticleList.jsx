@@ -5,29 +5,52 @@ import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
 import { observer } from 'mobx-react'
-import { action, computed, configure, decorate, observable } from 'mobx'
+import { action, configure, decorate, observable, runInAction } from 'mobx'
 
 configure({ enforceActions: 'observed' });
 
 class Store {
-  firstName = 'Yauhen';
-  age = 0;
+  filter = ''
+  group = 0
+  order = ''
+  desc = false
+  articles = []
 
-  get nickName() {
-    console.log('Generate nickName!');
-    return `${this.firstName} ${this.age}`;
+  filterChange(value) { this.filter = value };
+  groupSelectChange(value) { this.group = value };
+  orderClick(value) {
+    if (this.order === value) {
+      this.desc = !this.desc
+    }else{
+      this.order = value
+      this.desc = false
+    }
+    this.getArticles()
+  };
+  getArticles() {
+    const params = {
+      filter: this.filter,
+      group: this.group,
+      order: this.order,
+      desc: this.desc
+    }
+    get(`${API_HOST}/api/stories.json?with_articles=true`, { params: params })
+      .then(response => { runInAction( () => { this.articles = response.data.storiesWithArticles}) })
+      .catch(error => console.log('error', error));
   }
-
-  increment() { this.age++ };
-  decrement() { this.age-- };
 }
 
 decorate( Store, {
-  firstName: observable,
-  age: observable,
-  nickName: computed,
-  increment: action,
-  decrement: action
+  filter: observable,
+  group: observable,
+  order: observable,
+  desc: observable,
+  articles: observable,
+
+  filterChange: action,
+  groupSelectChange: action,
+  orderClick: action,
+  getArticles: action.bound
 })
 
 @observer class ArticleList extends Component {
@@ -35,71 +58,23 @@ decorate( Store, {
   constructor() {
     super();
     this.store = new Store();
-    this.state = {
-      filter: '',
-      group: 0,
-      order: {},
-      articles: []
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleGroupSelectChange = this.handleGroupSelectChange.bind(this);
-    this.handleOrderClick = this.handleOrderClick.bind(this);
   }
 
-  componentDidMount() {
-    this.getArticles();
-  }
+  componentDidMount() { this.store.getArticles(); }
 
-  handleChange(event) {
-    this.setState( { [event.target.name]: event.target.value });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    this.getArticles();
-  }
-
-  handleGroupSelectChange(selected) {
-    this.setState({ group: selected.value });
-  }
-
-  handleOrderClick(event) {
-    const fieldName = event.target.name;
-    this.setState( (state) => { return {order: { field: fieldName, desc: !state.order.desc }}}, this.getArticles)
-  }
-
-  getArticles() {
-    const params = {
-      filter: this.state.filter,
-      group: this.state.group,
-      order: this.state.order.field,
-      desc: this.state.order.desc
-    }
-    get(`${API_HOST}/api/stories.json?with_articles=true`, { params: params })
-      .then(response => {
-        this.setState({articles: response.data.storiesWithArticles});
-      })
-      .catch(error => console.log('error', error));
-  }
-
-  handleIncrement = () => { this.store.increment() };
-  handleDecrement = () => { this.store.decrement() };
+  handleSubmit = (event) => { event.preventDefault(); this.store.getArticles(); }
+  handleFilterChange = ({ target: { value } }) => { this.store.filterChange(value) };
+  handleGroupSelectChange = ({ value }) => { this.store.groupSelectChange(value) };
+  handleOrderClick = ({ target: { name } }) => { this.store.orderClick(name) };
 
   render() {
-    const state = this.state
+    const store = this.store
     const orderFlagFor = (field_name) => {
-      return this.state.order.field === field_name && (this.state.order.desc ? '\u2191' : '\u2193')
+      return this.store.order === field_name && (this.store.desc ? '\u2191' : '\u2193')
     }
 
     return (
       <div style={{marginTop: '1em'}}>
-
-        <h1>{this.store.nickName}</h1>
-        <h1>{this.store.age}</h1>
-        <button onClick={this.handleDecrement}>-1</button>
-        <button onClick={this.handleIncrement}>+1</button>
-
         <Form onSubmit={this.handleSubmit} inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>
@@ -107,8 +82,8 @@ decorate( Store, {
               <Input
                 name="filter"
                 type="search"
-                value={state.filter}
-                onChange={this.handleChange}
+                value={store.filter}
+                onChange={this.handleFilterChange}
                 placeholder="search by name and content ..."
               />
             </InputGroup>
@@ -119,7 +94,7 @@ decorate( Store, {
               <InputGroupAddon addonType="prepend">Group by</InputGroupAddon>
               <Select
                 id="group"
-                value={GROUP_BY[state.group]}
+                value={GROUP_BY[store.group]}
                 onChange={this.handleGroupSelectChange}
                 options={GROUP_BY}
                 placeholder=" select ..."
@@ -166,7 +141,7 @@ decorate( Store, {
           </tr>
           </thead>
           <tbody>
-            {this.state.articles.map((article) => {
+            {this.store.articles.map((article) => {
               return(
                 <tr key={article.id}>
                   <td>{article.story_name}</td>
