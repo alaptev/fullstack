@@ -4,11 +4,8 @@ import { Link } from 'react-router-dom';
 import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
 
-@observer class ArticleList extends Component {
-  @observable count = 0;
+class ArticleList extends Component {
 
   constructor() {
     super();
@@ -68,11 +65,6 @@ import { observer } from 'mobx-react';
 
     return (
       <div style={{marginTop: '1em'}}>
-        <h1>{this.count}</h1>
-        <button>+1</button>
-        <button>-1</button>
-
-
         <Form onSubmit={this.handleSubmit} inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>
