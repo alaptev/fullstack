@@ -5,7 +5,7 @@ import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
 import { observer } from 'mobx-react'
-import { action, configure, decorate, observable, runInAction } from 'mobx'
+import { action, configure, decorate, observable, runInAction, autorun} from 'mobx'
 
 configure({ enforceActions: 'observed' });
 
@@ -15,6 +15,8 @@ class Store {
   order = ''
   desc = false
   articles = []
+
+  constructor() { this.getArticles() }
 
   filterChange(value) { this.filter = value };
   groupSelectChange(value) { this.group = value };
@@ -50,17 +52,24 @@ decorate( Store, {
   filterChange: action,
   groupSelectChange: action,
   orderClick: action,
-  getArticles: action.bound
+  getArticles: action
 })
+
+const appStore = new Store();
+
+// autorun(() => {
+//   // console.log(`Count value is: ${appStore.desc}`);
+//   appStore.getArticles();
+// }, {
+//   name: 'Custom autorun'
+// })
 
 @observer class ArticleList extends Component {
 
   constructor() {
     super();
-    this.store = new Store();
+    this.store = appStore;
   }
-
-  componentDidMount() { this.store.getArticles(); }
 
   handleSubmit = (event) => { event.preventDefault(); this.store.getArticles(); }
   handleFilterChange = ({ target: { value } }) => { this.store.filterChange(value) };
