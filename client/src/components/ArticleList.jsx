@@ -4,11 +4,37 @@ import { Link } from 'react-router-dom';
 import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
+import { observer } from 'mobx-react'
+import { action, computed, configure, decorate, observable } from 'mobx'
 
-class ArticleList extends Component {
+configure({ enforceActions: 'observed' });
+
+class Store {
+  firstName = 'Yauhen';
+  age = 0;
+
+  get nickName() {
+    console.log('Generate nickName!');
+    return `${this.firstName} ${this.age}`;
+  }
+
+  increment() { this.age++ };
+  decrement() { this.age-- };
+}
+
+decorate( Store, {
+  firstName: observable,
+  age: observable,
+  nickName: computed,
+  increment: action,
+  decrement: action
+})
+
+@observer class ArticleList extends Component {
 
   constructor() {
     super();
+    this.store = new Store();
     this.state = {
       filter: '',
       group: 0,
@@ -57,6 +83,9 @@ class ArticleList extends Component {
       .catch(error => console.log('error', error));
   }
 
+  handleIncrement = () => { this.store.increment() };
+  handleDecrement = () => { this.store.decrement() };
+
   render() {
     const state = this.state
     const orderFlagFor = (field_name) => {
@@ -65,6 +94,12 @@ class ArticleList extends Component {
 
     return (
       <div style={{marginTop: '1em'}}>
+
+        <h1>{this.store.nickName}</h1>
+        <h1>{this.store.age}</h1>
+        <button onClick={this.handleDecrement}>-1</button>
+        <button onClick={this.handleIncrement}>+1</button>
+
         <Form onSubmit={this.handleSubmit} inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>

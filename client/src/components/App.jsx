@@ -4,21 +4,11 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import '../stylesheets/App.css';
 import ArticleList from './ArticleList';
 import ArticleAddEdit from './ArticleAddEdit';
-import { observer } from 'mobx-react';
 
-@observer class App extends Component {
-
-  handleIncrement = () => { this.props.store.increment() };
-  handleDecrement = () => { this.props.store.decrement() };
-
+class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>{this.props.store.nickName}</h1>
-        <h1>{this.props.store.age}</h1>
-        <button onClick={this.handleDecrement}>-1</button>
-        <button onClick={this.handleIncrement}>+1</button>
-
         <Router>
           <div className="container">
             <Main />
