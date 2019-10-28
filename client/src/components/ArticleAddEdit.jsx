@@ -4,6 +4,7 @@ import { API_HOST, ARTICLE_TYPE } from '../constants'
 import Select from 'react-select';
 import find from 'lodash/find'
 
+// TODO: use MobX
 class ArticleAddEdit extends Component {
   constructor() {
     super();
