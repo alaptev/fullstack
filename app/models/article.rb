@@ -11,4 +11,10 @@ class Article < ApplicationRecord
   # 2-'facebook',
   # 3-'tweet'
   validates :a_type, presence: true
+
+  after_commit :send_broadcast_message
+
+  def send_broadcast_message
+    ActionCable.server.broadcast('my_pubsub_queue', 'ARTICLES_WERE_UPDATED')
+  end
 end

@@ -1,13 +1,36 @@
 import React, { Component } from 'react';
 import { get } from 'axios';
 import { Link } from 'react-router-dom';
-import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
+import { API_HOST, ARTICLE_TYPE, GROUP_BY, WS_HOST } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
 import { observer } from 'mobx-react'
-import { action, configure, decorate, observable, runInAction, autorun} from 'mobx'
+import { action, configure, decorate, observable, runInAction } from 'mobx'
 
 configure({ enforceActions: 'observed' });
+
+const openConnection = () => { return new WebSocket(`${WS_HOST}/cable`) }
+
+const subscribe = () => {
+  const realTimeWebSocket = openConnection();
+  realTimeWebSocket.onopen = (event) => {
+    const identifierMsg = JSON.stringify({
+      "channel":"RealTimeChannel"
+    })
+    const subscribeMsg = {
+      "command":"subscribe",
+      "identifier":identifierMsg
+    }
+    realTimeWebSocket.send(JSON.stringify(subscribeMsg))
+  }
+  realTimeWebSocket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('---log--- data = ', data)
+    if (data.message === 'ARTICLES_WERE_UPDATED') {
+      appStore.getArticles();
+    }
+  }
+}
 
 class Store {
   filter = ''
@@ -16,7 +39,10 @@ class Store {
   desc = false
   articles = []
 
-  constructor() { this.getArticles() }
+  constructor() {
+    // this.getArticles()
+    subscribe()
+  }
 
   filterChange(value) { this.filter = value };
   groupSelectChange(value) { this.group = value };
@@ -29,7 +55,10 @@ class Store {
     }
     this.getArticles()
   };
+  formSubmit() { this.getArticles() }
+
   getArticles() {
+    //console.log('---log--- getArticles()');
     const params = {
       filter: this.filter,
       group: this.group,
@@ -52,7 +81,9 @@ decorate( Store, {
   filterChange: action,
   groupSelectChange: action,
   orderClick: action,
-  getArticles: action
+  formSubmit: action
+
+  // getArticles: action
 })
 
 const appStore = new Store();
@@ -71,7 +102,9 @@ const appStore = new Store();
     this.store = appStore;
   }
 
-  handleSubmit = (event) => { event.preventDefault(); this.store.getArticles(); }
+  componentDidMount () { this.store.getArticles() }
+
+  handleSubmit = (event) => { event.preventDefault(); this.store.formSubmit(); }
   handleFilterChange = ({ target: { value } }) => { this.store.filterChange(value) };
   handleGroupSelectChange = ({ value }) => { this.store.groupSelectChange(value) };
   handleOrderClick = ({ target: { name } }) => { this.store.orderClick(name) };

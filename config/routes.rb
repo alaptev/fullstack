@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   scope '/api' do
     resources :stories
   end
+  mount ActionCable.server => '/cable'
 end
