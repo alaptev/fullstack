@@ -35,7 +35,7 @@ module Fullstack
     # prevent Rails from blocking cross browser access, since our front end and back end will be running on different ports
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:3013', 'http://my-api.test:3013' #, 'https://candle-my-api.herokuapp.com'
+        origins 'http://localhost:3013', 'https://anton-fullstack.herokuapp.com'
         resource '*', :headers => :any, :methods => [:get, :post, :put, :patch, :delete, :options]
       end
     end
