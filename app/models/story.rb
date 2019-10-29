@@ -1,9 +1,11 @@
-class Story < ApplicationRecord
-  has_many :articles, inverse_of: :story #, dependent: :destroy
+# frozen_string_literal: true
 
-  # validates :name, presence: true, uniqueness: true
+class Story < ApplicationRecord
+  has_many :articles, inverse_of: :story # , -> { order('id DESC') }
+
+  validates :name, presence: true
 
   # https://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
-  accepts_nested_attributes_for :articles #, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :articles # , reject_if: proc { |attributes| attributes['name'].blank? }
   # accepts_nested_attributes_for :articles, allow_destroy: true
 end

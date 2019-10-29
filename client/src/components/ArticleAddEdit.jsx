@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { API_HOST, ARTICLE_TYPE } from '../constants'
 import Select from 'react-select';
+import find from 'lodash/find'
 
-class ArticleAdd extends Component {
+// TODO: use MobX
+class ArticleAddEdit extends Component {
   constructor() {
     super();
     this.state = {
       stories: [],
       story: {},
-      name: 'default article', content: '',
-      type: ARTICLE_TYPE[0]
+      article: { id: null, name: '', content: '', a_type: 1 }
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
@@ -22,30 +23,49 @@ class ArticleAdd extends Component {
   }
 
   componentDidMount() {
-    const transformToOptions = (data) => {
-      return data.map((story) => {
+    const editArticleId = this.props.match.params.id
+    const params = editArticleId && { article_id: editArticleId }
+
+    const transformStoriesToOptions = (data) => {
+      return data.storiesOnly && data.storiesOnly.map((story) => {
           return { value: story.id, label: story.name}
         }
       )
     }
 
-    axios(`${API_HOST}/api/stories.json?stories_only=true`)
+    axios(`${API_HOST}/api/stories.json`, { params: params })
       .then((response) => {
-        const stories = transformToOptions(response.data);
-        this.setState( { stories: stories, story: stories[0] || {} });
+        const storiesOnly = transformStoriesToOptions(response.data);
+        if (editArticleId) {
+          const article = response.data.articleToEdit
+          const story = find(storiesOnly, ['value', article.story_id])
+          this.setState( { stories: storiesOnly, story: story, article: article });
+        } else {
+          const story = storiesOnly[0] || {}
+          this.setState( { stories: storiesOnly, story: story });
+        }
       })
       .catch(error => console.log('error', error));
+
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const state = this.state;
+    const { story, article } = this.state;
     const data = {
-      id: state.story.value,
-      name: state.story.label,
-      articles_attributes: [ { name: state.name, content: state.content, a_type: state.type.value} ]
+      id: story.value,
+      name: story.label,
+      articles_attributes: [ article ]
     };
-    axios.post(`${API_HOST}/api/stories.json`, data)
+    let config = { data: data }
+
+    if (data.id) { // create/update article for existent story
+      config = { ...config,  method: 'patch', url: `${API_HOST}/api/stories/${data.id}` }
+    } else { // create new story and new article
+      config = { ...config,  method: 'post', url: `${API_HOST}/api/stories.json` }
+    }
+
+    axios(config)
       .then((response) => {
         this.props.history.push('/');
       })
@@ -53,7 +73,9 @@ class ArticleAdd extends Component {
   }
 
   handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
+    // console.log('---log--- event.target = ', event.target);
+    const target = event.target;
+    this.setState( (state) => { return { article: { ...state.article, [target.name]: target.value } } });
   }
 
   handleCancel() {
@@ -61,21 +83,15 @@ class ArticleAdd extends Component {
   }
 
   handleTypeSelectChange(selected) {
-    console.log(`Type selected:`, selected);
-    this.setState({ type: selected });
+    this.setState((state) => { return { article: { ...state.article, a_type: selected.value } } });
   }
 
   handleStorySelectChange(selected) {
-    console.log(`Story selected:`, selected);
     this.setState({ story: selected });
   }
 
   handleStorySelectInputChange(selected) {
-    console.log(`StoryInput selected:`, selected);
-    if (!!selected) {
-      const story = {value: '0', label: selected};
-      this.setState({ stories: [story], story: story });
-    }
+    !!selected && this.setState({ story: {value: null, label: selected} });
   }
 
   handleDelete(event) {
@@ -91,33 +107,37 @@ class ArticleAdd extends Component {
 
   render() {
     const editArticleId = this.props.match.params.id
+    const {article, story, stories} = this.state
 
+    // TODO: add js validation for form fields
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
           <div className="form-group">
             <label>Story Name</label>
             <Select
-              value={this.state.story}
+              value={story}
               onChange={this.handleStorySelectChange}
               onInputChange={this.handleStorySelectInputChange}
-              options={this.state.stories}
+              options={stories}
               placeholder='enter story name ...'
+              isDisabled={ editArticleId }
             />
           </div>
           <div className="form-group">
             <label>Article Name</label>
-            <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" />
+            <input type="text" name="name" value={article.name} onChange={this.handleChange} className="form-control" />
           </div>
           <div className="form-group">
             <label>Content</label>
-            <textarea name="content" rows="5" value={this.state.content} onChange={this.handleChange} className="form-control" />
+            <textarea name="content" rows="5" value={article.content} onChange={this.handleChange} className="form-control" />
           </div>
           <Select
-            value={this.state.type}
+            value={ARTICLE_TYPE[article.a_type - 1]}
             onChange={this.handleTypeSelectChange}
             options={ARTICLE_TYPE}
           />
+          <br />
           <div className="btn-group">
             <button type="submit" className="btn btn-dark">{ editArticleId ? 'Update' : 'Create' }</button>
             { editArticleId && <button type="button" onClick={this.handleDelete} className="btn btn-outline-dark">Delete</button> }
@@ -129,4 +149,4 @@ class ArticleAdd extends Component {
   }
 }
 
-export default ArticleAdd;
+export default ArticleAddEdit;

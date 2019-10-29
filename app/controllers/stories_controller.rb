@@ -1,25 +1,36 @@
+# frozen_string_literal: true
+
 class StoriesController < ApplicationController
-  before_action :set_story, only: [:show, :update, :destroy]
+  before_action :set_story, only: [:update]
+  before_action :set_article, only: [:destroy]
 
   # GET /stories
   def index
-    if get_story_params[:with_articles]
-      @stories = Story.joins(:articles).select('articles.*, stories.name AS story_name')
-    else
-      @stories = Story.all
-    end
+    p = permitted_params
+    order_by = (p[:order]).to_s
+    order_by += ' DESC' if p[:desc] == 'true'
+    group_by_field = GROUP_BY[p[:group]] ? GROUP_BY[p[:group]][:field_name] : ''
+    data = if p[:with_articles]
+             # TODO: anton: add grouped by story with totals
+             articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
+                               .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
+                               .order(order_by).order('articles.id')
+                               .group(group_by_field)
+             { storiesWithArticles: articles }
+           elsif p[:article_id]
+             { storiesOnly: Story.all,
+               articleToEdit: Article.find(p[:article_id]) }
+           else
+             { storiesOnly: Story.all }
+           end
 
-    render json: @stories
-  end
-
-  # GET /stories/1
-  def show
-    render json: @story
+    render json: data
   end
 
   # POST /stories
+  # create new story and new article
   def create
-    @story = Story.new(story_params)
+    @story = Story.new(create_params)
 
     if @story.save
       render json: @story, status: :created, location: @story
@@ -28,36 +39,60 @@ class StoriesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /stories/1
+  # PATCH/PUT /stories/:id
+  # :id - this is story_id
+  # create/update article for existent story
   def update
-    if @story.update(story_params)
+    if @story.update(update_params)
       render json: @story
     else
       render json: @story.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /stories/1
+  # DELETE /stories/:id
+  # :id - this is article id
+  # delete the article and story(if it is empty)
   def destroy
-    @story.destroy
+    @article.destroy
+    @article.story.destroy if @article.story.articles.count == 0
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_story
-      @story = Story.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def story_params
-      p = params.require(:story).permit(:name, articles_attributes: [ :id, :name, :content, :a_type ])
-      logger.info "---log--- params = '#{p.inspect}' "
-      p
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_story
+    @story = Story.find(params[:id])
+  end
 
-  def get_story_params
-    p = params.permit(:with_articles)
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def create_params
+    p = params.require(:story).permit(:name, articles_attributes: %i[name content a_type])
     logger.info "---log--- params = '#{p.inspect}' "
     p
   end
+
+  def update_params
+    p = params.require(:story).permit(:id, :name, articles_attributes: %i[id name content a_type])
+    logger.info "---log--- params = '#{p.inspect}' "
+    p
+  end
+
+  def permitted_params
+    p = params.permit(:with_articles, :article_id, :filter, :order, :desc, :group)
+    logger.info "---log--- params = '#{p.inspect}' "
+    p
+  end
+
+  GROUP_BY = {
+    '0' => { value: '0', field_name: '',           label: 'no group' },
+    '1' => { value: '1', field_name: 'story_name', label: 'Story Name' },
+    '2' => { value: '2', field_name: 'name',       label: 'Article Name' },
+    '3' => { value: '3', field_name: 'content',    label: 'Article Content' },
+    '4' => { value: '4', field_name: 'a_type',     label: 'Article Type' }
+  }.freeze
 end

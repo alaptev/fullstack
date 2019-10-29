@@ -25,9 +25,6 @@ gem 'puma', '~> 3.11'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
-
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -45,8 +42,14 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # prevent Rails from blocking cross browser access, since our front end and back end will be running on different ports.
 gem 'rack-cors', require: 'rack/cors'
 
-# TODO: anton: add it
+# TODO: anton: add it 'active_model_serializers' gem:
+# https://itnext.io/a-quickstart-guide-to-using-serializer-with-your-ruby-on-rails-api-d5052dea52c5
+# https://www.driftingruby.com/episodes/rails-api-active-model-serializer
+# https://rubydoc.info/gems/active_model_serializers
+# https://github.com/rails-api/active_model_serializers/blob/v0.10.6/docs/README.md
+# https://stackoverflow.com/questions/12485404/how-to-implement-multiple-different-serializers-for-same-model-using-activemodel
 # gem 'active_model_serializers'
