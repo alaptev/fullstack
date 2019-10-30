@@ -1,77 +1,12 @@
 import React, { Component } from 'react';
-import { get } from 'axios';
 import { Link } from 'react-router-dom';
-import { API_HOST, ARTICLE_TYPE, GROUP_BY } from '../constants';
+import { ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
 import { observer } from 'mobx-react'
-import { action, configure, decorate, observable, runInAction } from 'mobx'
-import { subscribe } from '../subscribe'
-
-configure({ enforceActions: 'observed' });
-
-class Store {
-  filter = ''
-  group = 0
-  order = ''
-  desc = false
-  articles = []
-
-  constructor() {
-    // this.getArticles()
-    subscribe(this)
-  }
-
-  filterChange(value) { this.filter = value };
-  groupSelectChange(value) { this.group = value };
-  orderClick(value) {
-    if (this.order === value) {
-      this.desc = !this.desc
-    }else{
-      this.order = value
-      this.desc = false
-    }
-    this.getArticles()
-  };
-  formSubmit() { this.getArticles() }
-
-  getArticles() {
-    //console.log('---log--- getArticles()');
-    const params = {
-      filter: this.filter,
-      group: this.group,
-      order: this.order,
-      desc: this.desc
-    }
-    get(`${API_HOST}/api/stories.json?with_articles=true`, { params: params })
-      .then(response => { runInAction( () => { this.articles = response.data.storiesWithArticles}) })
-      .catch(error => console.log('error', error));
-  }
-}
-
-decorate( Store, {
-  filter: observable,
-  group: observable,
-  order: observable,
-  desc: observable,
-  articles: observable,
-
-  filterChange: action,
-  groupSelectChange: action,
-  orderClick: action,
-  formSubmit: action
-
-  // getArticles: action
-})
+import { Store } from '../store'
 
 const appStore = new Store();
-
-// autorun(() => {
-//   // console.log(`Count value is: ${appStore.desc}`);
-//   appStore.getArticles();
-// }, {
-//   name: 'Custom autorun'
-// })
 
 @observer class ArticleList extends Component {
 
