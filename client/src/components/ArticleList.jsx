@@ -134,13 +134,14 @@ const appStore = new Store();
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>
               <InputGroupAddon addonType="prepend">Group by</InputGroupAddon>
-              <Select
-                id="group"
-                value={GROUP_BY[store.group]}
-                onChange={this.handleGroupSelectChange}
-                options={GROUP_BY}
-                placeholder=" select ..."
-              />
+              <div style={ {width: '300px'} }>
+                <Select
+                  id="group"
+                  value={GROUP_BY[store.group]}
+                  onChange={this.handleGroupSelectChange}
+                  options={GROUP_BY}
+                />
+              </div>
             </InputGroup>
           </FormGroup>
 
