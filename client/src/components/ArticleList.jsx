@@ -6,13 +6,11 @@ import Select from 'react-select';
 import { observer } from 'mobx-react'
 import { Store } from '../store'
 
-const appStore = new Store();
-
 @observer class ArticleList extends Component {
 
-  constructor() {
-    super();
-    this.store = appStore;
+  constructor (props) {
+    super(props);
+    this.store = new Store();
   }
 
   componentDidMount () { this.store.getArticles() }
