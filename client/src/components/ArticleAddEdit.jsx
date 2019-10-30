@@ -6,8 +6,8 @@ import find from 'lodash/find'
 
 // TODO: use MobX
 class ArticleAddEdit extends Component {
-  constructor() {
-    super();
+  constructor (props) {
+    super(props);
     this.state = {
       stories: [],
       story: {},
