@@ -5,7 +5,7 @@ import { action, configure, decorate, observable, runInAction } from 'mobx'
 
 configure({ enforceActions: 'observed' });
 
-export class Store {
+export class articleListStore {
   filter = ''
   group = 0
   order = ''
@@ -44,7 +44,7 @@ export class Store {
   }
 }
 
-decorate( Store, {
+decorate( articleListStore, {
   filter: observable,
   group: observable,
   order: observable,

@@ -4,13 +4,13 @@ import { ARTICLE_TYPE, GROUP_BY } from '../constants';
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } from 'reactstrap';
 import Select from 'react-select';
 import { observer } from 'mobx-react'
-import { Store } from '../store'
+import { articleListStore } from '../articleListStore'
 
 @observer class ArticleList extends Component {
 
   constructor (props) {
     super(props);
-    this.store = new Store();
+    this.store = new articleListStore();
   }
 
   componentDidMount () { this.store.getArticles() }
