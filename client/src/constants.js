@@ -1,8 +1,8 @@
 // common constants
-export const API_HOST = 'http://localhost:3012';
-export const WS_HOST = 'ws://localhost:3012';
-// export const API_HOST = 'https://anton-fullstack.herokuapp.com';
-// export const WS_HOST = 'wss://anton-fullstack.herokuapp.com';
+// export const API_HOST = 'http://localhost:3012';
+// export const WS_HOST = 'ws://localhost:3012';
+export const API_HOST = 'https://anton-fullstack.herokuapp.com';
+export const WS_HOST = 'wss://anton-fullstack.herokuapp.com';
 export const ARTICLE_TYPE = [
   { value: '1', label: 'blog' },
   { value: '2', label: 'facebook' },
