@@ -6,14 +6,14 @@ import find from 'lodash/find'
 
 // TODO: use MobX
 class ArticleAddEdit extends Component {
-  constructor() {
-    super();
+  constructor (props) {
+    super(props);
     this.state = {
       stories: [],
       story: {},
       article: { id: null, name: '', content: '', a_type: 1 }
     };
-    this.handleChange = this.handleChange.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
     this.handleTypeSelectChange = this.handleTypeSelectChange.bind(this);
     this.handleStorySelectChange = this.handleStorySelectChange.bind(this);
     this.handleStorySelectInputChange = this.handleStorySelectInputChange.bind(this);
@@ -72,9 +72,7 @@ class ArticleAddEdit extends Component {
       .catch(error => console.log('error', error));
   }
 
-  handleChange(event) {
-    // console.log('---log--- event.target = ', event.target);
-    const target = event.target;
+  handleTextChange({ target }) {
     this.setState( (state) => { return { article: { ...state.article, [target.name]: target.value } } });
   }
 
@@ -82,16 +80,16 @@ class ArticleAddEdit extends Component {
     this.props.history.push("/");
   }
 
-  handleTypeSelectChange(selected) {
-    this.setState((state) => { return { article: { ...state.article, a_type: selected.value } } });
+  handleTypeSelectChange({ value }) {
+    this.setState((state) => { return { article: { ...state.article, a_type: value } } });
   }
 
   handleStorySelectChange(selected) {
     this.setState({ story: selected });
   }
 
-  handleStorySelectInputChange(selected) {
-    !!selected && this.setState({ story: {value: null, label: selected} });
+  handleStorySelectInputChange(text) {
+    !!text && this.setState({ story: {value: null, label: text} });
   }
 
   handleDelete(event) {
@@ -126,11 +124,11 @@ class ArticleAddEdit extends Component {
           </div>
           <div className="form-group">
             <label>Article Name</label>
-            <input type="text" name="name" value={article.name} onChange={this.handleChange} className="form-control" />
+            <input type="text" name="name" value={article.name} onChange={this.handleTextChange} className="form-control" />
           </div>
           <div className="form-group">
             <label>Content</label>
-            <textarea name="content" rows="5" value={article.content} onChange={this.handleChange} className="form-control" />
+            <textarea name="content" rows="5" value={article.content} onChange={this.handleTextChange} className="form-control" />
           </div>
           <Select
             value={ARTICLE_TYPE[article.a_type - 1]}

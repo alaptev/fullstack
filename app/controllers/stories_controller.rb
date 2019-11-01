@@ -10,7 +10,7 @@ class StoriesController < ApplicationController
     order_by = (p[:order]).to_s
     order_by += ' DESC' if p[:desc] == 'true'
     group_by_field = GROUP_BY[p[:group]] ? GROUP_BY[p[:group]][:field_name] : ''
-    data = if p[:with_articles]
+    data = if p[:with_articles] == 'true'
              # TODO: anton: add grouped by story with totals
              articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
                                .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
