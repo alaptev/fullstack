@@ -9,8 +9,9 @@
     "yarn": "1.19.1"
   },
   "scripts": {
+    "pre-build": "cp client/src/heroku_host_constants.js client/src/host_constants.js",
     "build": "yarn --cwd client install && yarn --cwd client build",
     "deploy": "cp -a client/build/. public/",
-    "heroku-postbuild": "yarn build && yarn deploy"
+    "heroku-postbuild": "yarn pre-build && yarn build && yarn deploy"
   }
 }

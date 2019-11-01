@@ -1,4 +1,4 @@
-import { WS_HOST } from './constants'
+import { WS_HOST } from './host_constants'
 
 const openConnection = () => { return new WebSocket(`${WS_HOST}/cable`) }
 

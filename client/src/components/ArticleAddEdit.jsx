@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { API_HOST, ARTICLE_TYPE } from '../constants'
+import { ARTICLE_TYPE } from '../constants'
+import { API_HOST } from '../host_constants'
 import Select from 'react-select';
 import find from 'lodash/find'
 
