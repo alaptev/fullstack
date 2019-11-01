@@ -1,24 +1,53 @@
-# README
+## Tech stack:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ruby 2.6.5
 
-Things you may want to cover:
+Rails 5.2.3
 
-* Ruby version
+DB: Postgresql and sqlite3(dev env)
 
-* System dependencies
 
-* Configuration
+react@16.11.0
 
-* Database creation
+mobx@5.14.2
 
-* Database initialization
+mobx-react@6.1.4
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+## Task description:
 
-* Deployment instructions
+## Rails api back-end:
 
-* ...
+Given we have two models, Article and Story. Article has name, text and type (like blog post, facebook post or tweet).
+Story has name and contains one or more articles.
+
+There should be a single API enpoint that returns list of articles. Basing on query params list could be:
+
+ - searched by article name or text
+ - sorted on any field
+ - grouped by any of field
+ - grouped by story with totals:
+   - article count
+   - article type count
+   - last created article according to current sort
+   
+
+## UI
+
+Display the data using React.JS and Mobx.
+
+UI should consist of:
+
+- table of articles with sort controls in column headers
+- select box with options to group by
+- search input field
+
+
+## Realtime
+
+Let's suppose there are two users are on the same page and if one of them will create/delete/update article, second user should see these changes in real time.
+
+
+## Deploy
+
+Deploy the project on Heroku
