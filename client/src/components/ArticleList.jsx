@@ -5,6 +5,7 @@ import { Button, Form, FormGroup, Input, InputGroup, InputGroupAddon, Table } fr
 import Select from 'react-select';
 import { observer } from 'mobx-react'
 import { articleListStore } from '../articleListStore'
+import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trace.html
 
 @observer class ArticleList extends Component {
 
