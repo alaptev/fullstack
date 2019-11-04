@@ -71,21 +71,15 @@ class StoriesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def create_params
-    p = params.require(:story).permit(:name, articles_attributes: %i[name content a_type])
-    logger.info "---log--- params = '#{p.inspect}' "
-    p
+    params.require(:story).permit(:name, articles_attributes: %i[name content a_type])
   end
 
   def update_params
-    p = params.require(:story).permit(:id, :name, articles_attributes: %i[id name content a_type])
-    logger.info "---log--- params = '#{p.inspect}' "
-    p
+    params.require(:story).permit(:id, :name, articles_attributes: %i[id name content a_type])
   end
 
   def permitted_params
-    p = params.permit(:with_articles, :article_id, :filter, :order, :desc, :group)
-    logger.info "---log--- params = '#{p.inspect}' "
-    p
+    params.permit(:with_articles, :article_id, :filter, :order, :desc, :group)
   end
 
   GROUP_BY = {
