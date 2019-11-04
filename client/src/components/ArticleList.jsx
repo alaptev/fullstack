@@ -16,11 +16,6 @@ import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trac
 
   componentDidMount () { this.store.getArticles() }
 
-  handleSubmit = (event) => { event.preventDefault(); this.store.formSubmit(); }
-  handleFilterChange = ({ target: { value } }) => { this.store.filterChange(value) };
-  handleGroupSelectChange = ({ value }) => { this.store.groupSelectChange(value) };
-  handleOrderClick = ({ target: { name } }) => { this.store.orderClick(name) };
-
   render() {
     const store = this.store
     const orderFlagFor = (field_name) => {
@@ -29,7 +24,7 @@ import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trac
 
     return (
       <div style={{marginTop: '1em'}}>
-        <Form onSubmit={this.handleSubmit} inline>
+        <Form onSubmit={store.submit} inline>
           <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
             <InputGroup>
               <InputGroupAddon addonType="prepend">Search</InputGroupAddon>
@@ -37,7 +32,7 @@ import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trac
                 name="filter"
                 type="search"
                 value={store.filter}
-                onChange={this.handleFilterChange}
+                onChange={store.filterChange}
                 placeholder="search by name and content ..."
               />
             </InputGroup>
@@ -50,7 +45,7 @@ import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trac
                 <Select
                   id="group"
                   value={GROUP_BY[store.group]}
-                  onChange={this.handleGroupSelectChange}
+                  onChange={store.groupSelectChange}
                   options={GROUP_BY}
                 />
               </div>
@@ -68,28 +63,28 @@ import { trace } from "mobx" // for debug only!!!  https://mobx.js.org/best/trac
             <th>
               <Button
                 name='story_name'
-                onClick={this.handleOrderClick}>
+                onClick={store.orderClick}>
                 Story { orderFlagFor('story_name') }
               </Button>
             </th>
             <th>
               <Button
                 name='name'
-                onClick={this.handleOrderClick}>
+                onClick={store.orderClick}>
                 Article Name { orderFlagFor('name') }
               </Button>
             </th>
             <th>
               <Button
                 name='content'
-                onClick={this.handleOrderClick}>
+                onClick={store.orderClick}>
                 Content { orderFlagFor('content') }
               </Button>
             </th>
             <th>
               <Button
                 name='a_type'
-                onClick={this.handleOrderClick}>
+                onClick={store.orderClick}>
                 Type { orderFlagFor('a_type') }
               </Button>
             </th>

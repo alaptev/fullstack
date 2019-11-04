@@ -12,26 +12,28 @@ export class articleListStore {
   desc = false
   articles = []
 
-  constructor() {
-    // this.getArticles()
-    subscribe(this)
-  }
+  constructor() { subscribe(this) }
 
-  filterChange(value) { this.filter = value };
-  groupSelectChange(value) { this.group = value };
-  orderClick(value) {
-    if (this.order === value) {
+  filterChange({ target: { value } }) { this.filter = value };
+
+  groupSelectChange({ value }) { this.group = value };
+
+  orderClick({ target: { name } }) {
+    if (this.order === name) {
       this.desc = !this.desc
     }else{
-      this.order = value
+      this.order = name
       this.desc = false
     }
     this.getArticles()
   };
-  formSubmit() { this.getArticles() }
+
+  submit(event) {
+    event.preventDefault()
+    this.getArticles()
+  }
 
   getArticles() {
-    //console.log('---log--- getArticles()');
     const params = {
       filter: this.filter,
       group: this.group,
@@ -51,10 +53,8 @@ decorate( articleListStore, {
   desc: observable,
   articles: observable,
 
-  filterChange: action,
-  groupSelectChange: action,
-  orderClick: action,
-  formSubmit: action
-
-  // getArticles: action
+  filterChange: action.bound,
+  groupSelectChange: action.bound,
+  orderClick: action.bound,
+  submit: action.bound
 })
