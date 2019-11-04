@@ -40,10 +40,15 @@ export class articleAddEditStore {
       .catch(error => console.log('error', error));
 
   }
+
   typeSelectChange({ value }) { this.article.a_type = value }
+
   textChange({ target }) { this.article[target.name] = target.value }
+
   storySelectChange(selected) { this.story = selected }
+
   storySelectInputChange(text) { !!text && (this.story = {value: null, label: text}) }
+
   submit(event) {
     event.preventDefault();
     const data = {
@@ -63,6 +68,7 @@ export class articleAddEditStore {
       .then((response) => { this.props.history.push('/') })
       .catch(error => console.log('error', error));
   }
+
   delete(event) {
     const ArticleId = this.props.match.params.id
 
@@ -71,6 +77,7 @@ export class articleAddEditStore {
       .then(() => { this.props.history.push('/') })
       .catch(error => console.log('error', error));
   }
+
   cancel() { this.props.history.push("/") }
 }
 
