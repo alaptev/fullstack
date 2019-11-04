@@ -12,10 +12,17 @@ class StoriesController < ApplicationController
     group_by_field = GROUP_BY[p[:group]] ? GROUP_BY[p[:group]][:field_name] : ''
     data = if p[:with_articles] == 'true'
              # TODO: anton: add grouped by story with totals
-             articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
-                               .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
-                               .order(order_by).order('articles.id')
-                               .group(group_by_field)
+             if group_by_field.present?
+               ids = Article.select('max(id) as id').group(group_by_field).map(&:id)
+               articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
+                            .where('(articles.name LIKE ? OR articles.content LIKE ?) AND articles.id in (?)', "%#{p[:filter]}%", "%#{p[:filter]}%", ids)
+                            .order(order_by).order('articles.id')
+             else
+               articles = Article.select('articles.*, stories.name AS story_name').joins(:story)
+                            .where('articles.name LIKE ? OR articles.content LIKE ?', "%#{p[:filter]}%", "%#{p[:filter]}%")
+                            .order(order_by).order('articles.id')
+             end
+
              { storiesWithArticles: articles }
            elsif p[:article_id]
              { storiesOnly: Story.all,
@@ -84,7 +91,7 @@ class StoriesController < ApplicationController
 
   GROUP_BY = {
     '0' => { value: '0', field_name: '',           label: 'no group' },
-    '1' => { value: '1', field_name: 'story_name', label: 'Story Name' },
+    '1' => { value: '1', field_name: 'story_id',   label: 'Story Name' },
     '2' => { value: '2', field_name: 'name',       label: 'Article Name' },
     '3' => { value: '3', field_name: 'content',    label: 'Article Content' },
     '4' => { value: '4', field_name: 'a_type',     label: 'Article Type' }
