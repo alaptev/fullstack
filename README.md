@@ -29,7 +29,7 @@ There should be a single API enpoint that returns list of articles. Basing on qu
  - grouped by story with totals:
    - article count
    - article type count
-   - last created article according to current sort
+   - last article according to current sort
    
 
 ## UI
@@ -50,4 +50,4 @@ Let's suppose there are two users are on the same page and if one of them will c
 
 ## Deploy
 
-Deploy the project on Heroku
+Deploy the project to server and provide SSH access
