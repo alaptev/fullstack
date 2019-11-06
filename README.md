@@ -29,7 +29,7 @@ There should be a single API enpoint that returns list of articles. Basing on qu
  - grouped by story with totals:
    - article count
    - article type count
-   - last created article according to current sort
+   - last article according to current sort
    
 
 ## UI
