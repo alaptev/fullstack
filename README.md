@@ -50,4 +50,4 @@ Let's suppose there are two users are on the same page and if one of them will c
 
 ## Deploy
 
-Deploy the project on Heroku
+Deploy the project to server and provide SSH access
