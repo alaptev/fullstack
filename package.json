@@ -5,13 +5,15 @@
   "author": "Laptev Anton <antonlaptew@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": "10.15.2",
+    "node": "10.17.0",
     "yarn": "1.19.1"
   },
   "scripts": {
-    "pre-build": "cp client/src/heroku_host_constants.js client/src/host_constants.js",
+    "herokupre-build": "cp client/src/heroku_host_constants.js client/src/host_constants.js",
+    "gcp-pre-build": "cp client/src/gcp_host_constants.js client/src/host_constants.js",
     "build": "yarn --cwd client install && yarn --cwd client build",
     "deploy": "cp -a client/build/. public/",
-    "heroku-postbuild": "yarn pre-build && yarn build && yarn deploy"
+    "heroku-postbuild": "yarn herokupre-build && yarn build && yarn deploy",
+    "gcp-postbuild": "yarn gcp-pre-build && yarn build && yarn deploy"
   }
 }
