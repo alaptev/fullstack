@@ -45,3 +45,15 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bund
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+namespace :deploy do
+  task :yarn_deploy do
+    on roles fetch(:yarn_roles) do
+      within fetch(:yarn_target_path, release_path) do
+        execute fetch(:yarn_bin), 'gcp-postbuild'
+      end
+    end
+  end
+
+  before 'symlink:release', :yarn_deploy
+end
