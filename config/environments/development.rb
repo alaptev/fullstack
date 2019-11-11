@@ -54,8 +54,10 @@ Rails.application.configure do
 
   # https://medium.com/@the.asantiagojr/how-to-setup-actioncable-with-a-rails-api-backend-1f1807c2d908
   # If you wish to deploy to Heroku you must do this under production.rb
-  config.action_cable.url = 'ws://localhost:3012/cable'
+  # config.action_cable.url = 'ws://localhost:3012/cable'
   # To disable protection and allow requests from any origin
-  config.action_cable.disable_request_forgery_protection = true
+  # config.action_cable.disable_request_forgery_protection = true
 
+  config.action_cable.url = "ws://localhost:#{ENV['PORT_API']}/cable"
+  config.action_cable.allowed_request_origins = ["http://localhost:#{ENV['PORT_WEB']}"]
 end
