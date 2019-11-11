@@ -4,6 +4,8 @@ import './stylesheets/index.css';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 
+//TODO: use react context with root store
+
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
