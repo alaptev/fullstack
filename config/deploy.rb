@@ -6,7 +6,7 @@ set :repo_url, "git@github.com:alaptev/fullstack.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
@@ -28,7 +28,7 @@ set :deploy_to, "/home/deploy/#{fetch :application}"
 
 # Optionally, you can symlink your database.yml and/or secrets.yml file from the shared directory during deploy
 # This is useful if you don't want to use ENV variables
-append :linked_files, 'config/database.yml', 'config/master.key'
+append :linked_files, 'config/database.yml', 'config/master.key', '.rbenv-vars'
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
